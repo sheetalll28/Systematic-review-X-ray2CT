@@ -1,0 +1,21 @@
+% ==============================================================================
+% neural_field_methods.tex
+% ==============================================================================
+
+\section{Neural Field Methods}
+\label{sec:neural_field_methods}
+
+Neural implicit representations — particularly neural radiance fields (NeRF) and their variants — have been adapted for CT reconstruction by representing the 3D attenuation field as a continuous function parameterised by a multi-layer perceptron (MLP).
+
+\subsection{Key Approaches}
+
+\textbf{Neural Attenuation Fields (NAF)} \cite{zha2022naf} reformulates sparse-view cone-beam CT (CBCT) reconstruction as learning a neural field that maps 3D coordinates to attenuation coefficients. The network is optimised by minimising the discrepancy between projections rendered from the learned field and the observed X-ray images, analogous to NeRF-style volumetric rendering.
+
+% TODO: Add additional neural field approaches (e.g., NeAT, SNAF, PixelNeRF
+% adaptations for medical imaging).
+
+\subsection{Discussion}
+
+Neural field methods are attractive because they are inherently resolution-agnostic and can be trained per-scene without requiring large paired datasets. However, per-scene optimisation is computationally expensive (often requiring minutes to hours per volume), limiting clinical applicability. Recent work on generalizable neural fields and meta-learning-based initialisation aims to address this limitation.
+
+% TODO: Add comparison of optimisation times and reconstruction quality.

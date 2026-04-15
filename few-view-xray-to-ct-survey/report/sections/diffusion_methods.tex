@@ -1,0 +1,24 @@
+% ==============================================================================
+% diffusion_methods.tex
+% ==============================================================================
+
+\section{Diffusion-Based Methods}
+\label{sec:diffusion_methods}
+
+Denoising diffusion probabilistic models (DDPMs) and score-based generative models represent the latest frontier in few-view X-ray-to-CT reconstruction. These methods treat volumetric reconstruction as a conditional generation problem, iteratively refining a noisy 3D volume into a high-fidelity CT reconstruction guided by the input X-ray projections.
+
+\subsection{Key Approaches}
+
+\textbf{Diffusion Posterior Sampling (DPS)} \cite{chung2023diffusion} provides a general framework for solving inverse problems with pre-trained diffusion models. In the context of CT reconstruction, DPS conditions the reverse diffusion process on the observed projections by incorporating a data-consistency gradient step at each denoising iteration.
+
+% TODO: Add dedicated X-ray-to-CT diffusion methods:
+% - DiffusionCT
+% - X-Diffusion
+% - DiffuseRecon
+% - 3D-aware latent diffusion approaches
+
+\subsection{Discussion}
+
+Diffusion-based approaches have demonstrated impressive reconstruction quality and strong generalisation, particularly for out-of-distribution anatomy. Their primary drawback is computational cost: the iterative denoising process requires hundreds of forward passes through the network, making inference significantly slower than feed-forward methods. Latent diffusion models and consistency models are promising directions for accelerating inference while preserving quality.
+
+% TODO: Expand with inference time comparisons and visual quality examples.

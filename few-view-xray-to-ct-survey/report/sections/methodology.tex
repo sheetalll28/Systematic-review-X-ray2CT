@@ -1,0 +1,43 @@
+% ==============================================================================
+% methodology.tex
+% ==============================================================================
+
+\section{Review Methodology}
+\label{sec:methodology}
+
+This survey follows a systematic review methodology adapted from the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) guidelines.
+
+\subsection{Search Strategy}
+
+We conducted literature searches across the following databases and repositories:
+\begin{itemize}
+  \item IEEE Xplore
+  \item PubMed / MEDLINE
+  \item Google Scholar
+  \item arXiv (cs.CV, eess.IV)
+  \item Semantic Scholar
+\end{itemize}
+
+Search queries combined terms related to X-ray-to-CT reconstruction, few-view reconstruction, single-view 3D reconstruction, and specific method families (GAN, transformer, NeRF, diffusion). The search period covered publications from January 2018 to December 2025.
+
+\subsection{Inclusion and Exclusion Criteria}
+
+Papers were included if they:
+\begin{enumerate}
+  \item Proposed or evaluated a learning-based method for reconstructing CT volumes from $\leq$10 X-ray projections.
+  \item Were published in peer-reviewed venues or deposited on recognised preprint servers.
+  \item Provided quantitative evaluation against established metrics (e.g., PSNR, SSIM, FID).
+\end{enumerate}
+
+Papers were excluded if they focused solely on traditional (non-learning) reconstruction, addressed sparse-view CT with $>$10 projections without relevance to the few-view setting, or were non-English publications.
+
+\subsection{Paper Categorisation}
+
+Selected papers were categorised into three tiers:
+\begin{description}
+  \item[Core papers] directly address few-view X-ray-to-CT reconstruction with a novel method or significant empirical contribution.
+  \item[Supporting papers] provide relevant techniques, architectures, or insights that are applied or adapted in core methods.
+  \item[Background papers] offer foundational context (e.g., classical reconstruction, general deep learning surveys).
+\end{description}
+
+% TODO: Add PRISMA flow diagram figure.

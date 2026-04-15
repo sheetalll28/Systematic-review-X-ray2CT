@@ -1,0 +1,5 @@
+Method,Year,Family,Input_Views,Dataset,Resolution,PSNR,SSIM,FID,Inference_Time_s,Code_Available,Notes
+X2CT-GAN,2019,GAN,2,LIDC-IDRI,128x128x128,,,,,,Biplanar AP+Lateral input
+Single-Image Tomography,2018,GAN,1,Custom (Cranial),64x64x64,,,,,,Single cranial X-ray
+NAF,2022,Neural Field,10,Custom,256x256x256,,,,,,Per-scene optimisation
+DPS,2023,Diffusion,varies,varies,,,,,,,"General inverse problem solver, adapted for CT"

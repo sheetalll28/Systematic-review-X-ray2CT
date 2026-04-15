@@ -1,0 +1,21 @@
+% ==============================================================================
+% transformer_methods.tex
+% ==============================================================================
+
+\section{Transformer-Based Methods}
+\label{sec:transformer_methods}
+
+Vision transformers have recently been adapted for volumetric medical image reconstruction, motivated by their ability to model long-range dependencies through self-attention mechanisms.
+
+\subsection{Key Approaches}
+
+Unlike convolutional architectures, which rely on local receptive fields, transformer-based methods tokenise the input X-ray image(s) into patches and process them through multi-head self-attention layers. This is particularly beneficial for few-view reconstruction, where global context can compensate for the missing angular information.
+
+% TODO: Add specific transformer-based methods (e.g., TransCT, SwinCT, etc.)
+% with architecture descriptions and performance comparisons.
+
+\subsection{Discussion}
+
+Transformer-based approaches offer improved modelling of global spatial relationships compared to purely convolutional methods. However, the quadratic memory complexity of self-attention with respect to sequence length creates challenges when processing high-resolution 3D volumes. Hybrid architectures that combine convolutional feature extraction with transformer blocks have emerged as a practical compromise.
+
+% TODO: Expand with specific architecture diagrams and quantitative results.

@@ -1,0 +1,51 @@
+% ==============================================================================
+% comparative_analysis.tex
+% ==============================================================================
+
+\section{Comparative Analysis}
+\label{sec:comparative_analysis}
+
+This section presents a structured comparison of the surveyed methods across key dimensions: architectural design, input requirements, evaluation metrics, and reported performance.
+
+\subsection{Evaluation Metrics}
+
+The following metrics are commonly used to assess reconstruction quality:
+
+\begin{itemize}
+  \item \textbf{Peak Signal-to-Noise Ratio (PSNR)}: Measures pixel-level fidelity between the reconstructed and ground-truth CT volumes.
+  \item \textbf{Structural Similarity Index (SSIM)}: Captures perceptual similarity by comparing luminance, contrast, and structural information.
+  \item \textbf{Fréchet Inception Distance (FID)}: Evaluates the distributional quality of generated volumes (primarily used for GAN and diffusion methods).
+  \item \textbf{Mean Absolute Error (MAE)}: Quantifies average voxel-wise absolute deviation.
+\end{itemize}
+
+\subsection{Cross-Method Comparison}
+
+% TODO: Insert comprehensive comparison table.
+% Table should include: Method, Year, Architecture Family, Input Views,
+% Dataset, PSNR, SSIM, and any notable characteristics.
+
+\begin{table}[h]
+  \centering
+  \caption{Comparison of representative few-view X-ray-to-CT reconstruction methods. (To be completed.)}
+  \label{tab:comparison}
+  \begin{tabular}{llcccc}
+    \toprule
+    \textbf{Method} & \textbf{Family} & \textbf{Views} & \textbf{Dataset} & \textbf{PSNR} & \textbf{SSIM} \\
+    \midrule
+    X2CT-GAN (2019)  & GAN        & 2 & LIDC-IDRI & --    & --   \\
+    NAF (2022)       & Neural Field & 10 & Custom   & --    & --   \\
+    DPS (2023)       & Diffusion  & varies & varies & --    & --   \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Key Observations}
+
+\begin{enumerate}
+  \item GAN-based methods generally produce sharper images but may introduce anatomically implausible details.
+  \item Transformer-based methods show improved global coherence at the cost of increased computational requirements.
+  \item Neural field approaches excel in resolution flexibility but require per-scene optimisation.
+  \item Diffusion-based methods achieve state-of-the-art perceptual quality but are the slowest at inference time.
+\end{enumerate}
+
+% TODO: Expand observations with quantitative evidence from the literature.

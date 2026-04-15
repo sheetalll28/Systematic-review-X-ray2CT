@@ -1,0 +1,59 @@
+% ==============================================================================
+% A Systematic Review of Few-View X-Ray-to-CT Reconstruction:
+% From Single-View Learning to Diffusion-Based 3D Generation
+% ==============================================================================
+% Master document — compile this file with pdflatex + bibtex.
+% ==============================================================================
+
+\documentclass[11pt, a4paper]{article}
+
+% --- Packages ----------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{amsmath, amssymb}
+\usepackage{cite}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{float}
+
+% --- Metadata ----------------------------------------------------------------
+\title{%
+  A Systematic Review of Few-View X-Ray-to-CT Reconstruction:\\
+  From Single-View Learning to Diffusion-Based 3D Generation%
+}
+\author{[Author Names] \\ [Affiliation]}
+\date{\today}
+
+% ==============================================================================
+\begin{document}
+
+\maketitle
+
+% --- Abstract ----------------------------------------------------------------
+\input{sections/abstract}
+
+% --- Main sections -----------------------------------------------------------
+\input{sections/introduction}
+\input{sections/methodology}
+\input{sections/taxonomy}
+\input{sections/gan_methods}
+\input{sections/transformer_methods}
+\input{sections/neural_field_methods}
+\input{sections/diffusion_methods}
+\input{sections/datasets_and_domain_gap}
+\input{sections/comparative_analysis}
+\input{sections/future_directions}
+\input{sections/conclusion}
+
+% --- References --------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,5 @@
+# Python dependencies for helper scripts
+# Install with: pip install -r requirements.txt
+
+matplotlib>=3.7.0
+pandas>=2.0.0

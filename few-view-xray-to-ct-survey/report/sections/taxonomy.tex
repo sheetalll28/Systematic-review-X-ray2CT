@@ -1,0 +1,28 @@
+% ==============================================================================
+% taxonomy.tex
+% ==============================================================================
+
+\section{Taxonomy of Methods}
+\label{sec:taxonomy}
+
+We organise the surveyed methods into four major architectural families, reflecting both the historical evolution and the distinct design philosophies in the field.
+
+\begin{enumerate}
+  \item \textbf{GAN-Based Methods} (Section~\ref{sec:gan_methods}): These approaches employ generative adversarial networks to learn a mapping from 2D X-ray projections to 3D CT volumes. A generator network synthesises the volume, while a discriminator provides adversarial supervision to improve perceptual quality.
+
+  \item \textbf{Transformer-Based Methods} (Section~\ref{sec:transformer_methods}): Leveraging self-attention mechanisms and vision transformers, these methods capture long-range spatial dependencies that are difficult for purely convolutional architectures to model.
+
+  \item \textbf{Neural Field Methods} (Section~\ref{sec:neural_field_methods}): Inspired by neural radiance fields (NeRF), these approaches represent the CT volume as a continuous implicit function parameterised by a neural network, enabling reconstruction at arbitrary resolution.
+
+  \item \textbf{Diffusion-Based Methods} (Section~\ref{sec:diffusion_methods}): The most recent family applies denoising diffusion probabilistic models or score-based generative models to the reconstruction task, treating 3D volume synthesis as a conditional generation problem.
+\end{enumerate}
+
+Figure~\ref{fig:taxonomy} (to be added) illustrates the proposed taxonomy and the relationships among these families.
+
+% TODO: Insert taxonomy diagram (figures/taxonomy.pdf or .png).
+% \begin{figure}[t]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/taxonomy_placeholder}
+%   \caption{Proposed taxonomy of few-view X-ray-to-CT reconstruction methods.}
+%   \label{fig:taxonomy}
+% \end{figure}

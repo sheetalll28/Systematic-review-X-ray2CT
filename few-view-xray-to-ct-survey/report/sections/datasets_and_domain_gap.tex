@@ -1,0 +1,38 @@
+% ==============================================================================
+% datasets_and_domain_gap.tex
+% ==============================================================================
+
+\section{Datasets and Domain Gap}
+\label{sec:datasets}
+
+\subsection{Commonly Used Datasets}
+
+The following datasets are frequently used in few-view X-ray-to-CT reconstruction research:
+
+\begin{itemize}
+  \item \textbf{LIDC-IDRI} \cite{armato2011lidc}: A large-scale lung CT dataset containing 1,018 thoracic CT scans with annotated lung nodules. Digitally reconstructed radiographs (DRRs) are generated synthetically from the CT volumes to simulate X-ray inputs.
+
+  \item \textbf{DeepLesion}: A diverse CT dataset with over 32,000 annotated lesion instances across multiple body regions, useful for evaluating generalisation.
+
+  \item \textbf{CTPelvic1K}: A pelvic CT dataset used for evaluating bone-focused reconstruction methods.
+
+  \item \textbf{Institutional / Private Datasets}: Several studies use proprietary clinical datasets that are not publicly available, complicating reproducibility.
+\end{itemize}
+
+% TODO: Add more datasets (e.g., AAPM challenge, CTSpine1K, VerSe).
+
+\subsection{The Domain Gap Problem}
+
+A critical challenge in the field is the \textit{domain gap} between training and deployment conditions:
+
+\begin{enumerate}
+  \item \textbf{Synthetic vs.\ clinical X-rays}: Most methods train on DRRs generated from CT volumes, which lack scatter radiation, quantum noise characteristics, and patient-specific soft tissue contrast found in real clinical X-rays.
+
+  \item \textbf{Anatomy distribution}: Models trained on specific anatomical regions (e.g., chest) may fail to generalise to unseen regions (e.g., abdomen, extremities).
+
+  \item \textbf{Scanner variability}: Differences in imaging protocols, tube voltage, detector characteristics, and patient positioning across institutions introduce additional distributional shifts.
+\end{enumerate}
+
+Addressing the domain gap remains one of the most important open problems for clinical translation of few-view reconstruction methods.
+
+% TODO: Add domain adaptation strategies and their effectiveness.

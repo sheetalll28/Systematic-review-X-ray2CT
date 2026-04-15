@@ -1,0 +1,21 @@
+% ==============================================================================
+% introduction.tex
+% ==============================================================================
+
+\section{Introduction}
+\label{sec:introduction}
+
+Computed tomography (CT) is an indispensable imaging modality in clinical medicine, providing detailed cross-sectional views of internal anatomy. Conventional CT reconstruction algorithms, such as filtered back-projection (FBP), require a large number of X-ray projections acquired over a full angular range. Reducing the number of projections is desirable for lowering radiation exposure, shortening scan times, and enabling novel imaging configurations such as intra-operative or point-of-care CT.
+
+The problem of \textit{few-view} X-ray-to-CT reconstruction — estimating a 3D CT volume from a small number of 2D X-ray projections (typically one to ten views) — has attracted significant attention from the medical imaging and computer vision communities. Early learning-based approaches employed convolutional encoder--decoder architectures, while more recent work has explored generative adversarial networks (GANs), vision transformers, neural implicit representations, and diffusion-based generative models.
+
+Despite rapid progress, the field lacks a unified and up-to-date survey that covers the full spectrum of methods, from single-view learning to modern diffusion-based 3D generation. This paper aims to fill that gap by providing:
+
+\begin{enumerate}[label=(\roman*)]
+  \item A structured taxonomy of existing methods organised by architectural family.
+  \item A comparative analysis of representative approaches with respect to datasets, metrics, and reported performance.
+  \item An examination of the domain gap between synthetic and clinical data.
+  \item A discussion of open challenges and future research directions.
+\end{enumerate}
+
+% TODO: Expand with additional motivation and related survey comparisons.

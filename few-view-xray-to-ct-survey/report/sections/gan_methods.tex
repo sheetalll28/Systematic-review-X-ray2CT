@@ -1,0 +1,22 @@
+% ==============================================================================
+% gan_methods.tex
+% ==============================================================================
+
+\section{GAN-Based Methods}
+\label{sec:gan_methods}
+
+Generative adversarial networks (GANs) were among the earliest deep learning architectures applied to few-view X-ray-to-CT reconstruction. The core idea is to train a generator network $G$ that maps one or more 2D X-ray projections to a 3D CT volume, supervised by both a voxel-wise reconstruction loss and an adversarial loss provided by a discriminator $D$.
+
+\subsection{Key Approaches}
+
+\textbf{X2CT-GAN} \cite{ying2019x2ct} introduced a 3D conditional GAN for reconstructing CT volumes from biplanar (anteroposterior and lateral) X-ray images. The architecture uses a 2D encoder to extract features from each view, followed by a 3D decoder that synthesises the volumetric output. The discriminator operates on 3D patches to enforce realistic local structure.
+
+\textbf{Single-Image Tomography} \cite{henzler2018escaping} demonstrated that a single cranial X-ray can be used to predict a coarse 3D volume using an encoder--decoder network with adversarial training on cranial CT data.
+
+% TODO: Add additional GAN-based methods (e.g., CCX-rayNet, PerX2CT, etc.).
+
+\subsection{Discussion}
+
+GAN-based methods benefit from well-established training procedures and strong perceptual quality. However, they are susceptible to mode collapse, may hallucinate fine anatomical details, and often struggle with out-of-distribution anatomy. Training stability and the need for large paired datasets remain practical challenges.
+
+% TODO: Expand with quantitative comparison table.
