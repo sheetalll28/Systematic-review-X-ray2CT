@@ -20,8 +20,6 @@ This survey provides a comprehensive, structured review of the rapidly evolving 
 
 | Category | Scope |
 |---|---|
-| **Single-view methods** | Learning-based approaches that infer 3D volumes from a single 2D X-ray |
-| **Biplanar methods** | Techniques leveraging two orthogonal radiographs (e.g., AP + lateral) |
 | **GAN-based methods** | Generative adversarial networks for volumetric synthesis |
 | **Transformer-based methods** | Vision transformers and attention mechanisms for 3D reconstruction |
 | **Neural field methods** | Neural radiance fields (NeRF) and implicit representations adapted for CT |
