@@ -1,0 +1,4 @@
+Method,Year,Input,Anatomy,Representation,Key_Innovation,Dataset,IoU,Chamfer_L1,Notes
+MedNeRF,2022,Single / few X-rays,Chest / Knee,NeRF + shape-depth disentanglement,First NeRF for CT projection from single X-ray; disentangles shape and volumetric depth,Chest & knee CTs,,,High-fidelity CT projection synthesis from arbitrary angles; reduces X-rays from hundreds to 1
+X2BR (X2B only),2026,Single planar X-ray,Bone (Rib / Vertebra),ConvNeXt encoder + neural 3D occupancy field,Implicit occupancy: f(x; z) → o ∈ [0,1]; no SSM required,Institutional bone CT,0.952,0.005,No statistical shape model needed
+X2BR (full),2026,Single planar X-ray,Bone (Rib / Vertebra),Above + YOLOv9 landmark detection + geodesic CPD non-rigid registration,Anatomical prior via template-guided registration for anatomical consistency,Institutional bone CT,0.875,,Superior anatomical realism; clinically grounded hybrid approach

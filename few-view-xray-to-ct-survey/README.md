@@ -29,6 +29,29 @@ The survey also examines **benchmark datasets**, **domain gap challenges** (synt
 
 ---
 
+## Novelty & Gap This Survey Fills
+
+> **No systematic survey exists that covers the post-2023 generative era of X-ray-to-CT reconstruction.**
+
+The only comprehensive prior taxonomy of 2D-to-3D X-ray reconstruction is **Maken & Gupta (2023)** *(Arch. Comput. Methods Eng., 30:85–114)*, which systematically reviewed methods up to approximately **2020–2021** — covering classical statistical shape models (SSMs), parametric approaches, contour deformation, and early CNNs.
+
+Since that landmark survey, the field has undergone a **fundamental paradigm shift** driven by three transformative generative frameworks:
+
+| Era | Period | Representative Methods | What Changed |
+|---|---|---|---|
+| **GAN era** | 2021 – 2024 | X2CT-GAN, CVAE-GAN, TRCT-GAN, DP-GAN+B, AP2CT-GAN, PTX2CT-GAN | End-to-end volumetric synthesis from 1–2 X-rays; disease-specific architectures |
+| **Diffusion era** | 2024 – 2026 | DX2CT, DVG-Diffusion, 3D Diffusion (Yoon) | Stable training, iterative refinement, position-aware conditioning; now state-of-the-art |
+| **Neural Implicit / NeRF era** | 2022 – 2026 | MedNeRF, X2BR | Continuous implicit 3D fields; single X-ray → arbitrary CT projections; near-zero radiation limit |
+
+This survey is the **first work to systematically cover all three post-2023 generative eras together**, providing:
+
+- A unified chronological taxonomy spanning **1990 → 2026** across four eras.
+- Detailed architecture diagrams, mathematical formulations, and quantitative comparison tables for every reviewed method.
+- A cross-era comparative analysis highlighting the progressive shift from single-view constraints to diffusion-based state-of-the-art.
+- An identification of six open challenge areas and concrete future research directions.
+
+---
+
 ## Repository Contents
 
 ```
@@ -48,21 +71,8 @@ few-view-xray-to-ct-survey/
 │       └── extra/
 │
 ├── report/                    ← LaTeX source for the survey manuscript
-│   ├── main.tex               ← Master document (includes all sections)
+│   ├── main.tex               ← Master LaTeX document
 │   ├── references.bib         ← BibTeX bibliography
-│   ├── sections/              ← Individual section files
-│   │   ├── abstract.tex
-│   │   ├── introduction.tex
-│   │   ├── methodology.tex
-│   │   ├── taxonomy.tex
-│   │   ├── gan_methods.tex
-│   │   ├── transformer_methods.tex
-│   │   ├── neural_field_methods.tex
-│   │   ├── diffusion_methods.tex
-│   │   ├── datasets_and_domain_gap.tex
-│   │   ├── comparative_analysis.tex
-│   │   ├── future_directions.tex
-│   │   └── conclusion.tex
 │   └── output/
 │       ├── CV_REPORT.pdf      ← The fully compiled survey/report
 │       └── README.md          ← Instructions for viewing/generating the report
@@ -74,15 +84,13 @@ few-view-xray-to-ct-survey/
 │   ├── background_papers.md
 │   └── screening_notes.md
 │
-├── tables/                    ← CSV templates for comparison tables
-│   ├── comparison_table_template.csv
-│   └── paper_summary_template.csv
+├── tables/                    ← Extracted comparison tables (CSV)
+│   ├── comparison_table_template.csv    ← All 14 methods across all eras (master table)
+│   ├── gan_methods_comparison.csv       ← GAN-era methods detailed comparison
+│   ├── diffusion_methods_comparison.csv ← Diffusion-era methods detailed comparison
+│   └── nerf_neural_implicit_comparison.csv ← NeRF & neural implicit methods comparison
 │
-├── figures/                   ← Placeholder directory for figures
-│   ├── README.md
-│   ├── taxonomy_placeholder.txt
-│   └── method_timeline_placeholder.txt
-│
+
 ├── docs/                      ← Project documentation and methodology
 │   ├── project_scope.md
 │   ├── inclusion_exclusion_criteria.md
@@ -104,18 +112,25 @@ few-view-xray-to-ct-survey/
 
 ## How to Use
 
-### 1. Browse the Survey Content
+### 1. Read the Compiled Survey
 
-- Start with [`report/main.tex`](report/main.tex) to view the manuscript structure.
-- Individual sections are in [`report/sections/`](report/sections/).
-- References are managed in [`report/references.bib`](report/references.bib).
+- The full compiled PDF is at **[`report/output/CV_REPORT.pdf`](report/output/CV_REPORT.pdf)**.
+- The LaTeX source is the single self-contained file [`report/main.tex`](report/main.tex).
+- All references are in [`report/references.bib`](report/references.bib).
 
-### 2. Explore the Paper Metadata
+### 2. Explore the Comparison Tables
+
+- [`tables/comparison_table_template.csv`](tables/comparison_table_template.csv) — master table of all 14 reviewed methods.
+- [`tables/gan_methods_comparison.csv`](tables/gan_methods_comparison.csv) — GAN-era details.
+- [`tables/diffusion_methods_comparison.csv`](tables/diffusion_methods_comparison.csv) — diffusion-era details.
+- [`tables/nerf_neural_implicit_comparison.csv`](tables/nerf_neural_implicit_comparison.csv) — NeRF/neural implicit details.
+
+### 3. Explore the Paper Metadata
 
 - [`paper_metadata/included_papers.md`](paper_metadata/included_papers.md) explains the paper categorization scheme.
 - Core, supporting, and background papers are listed in their respective files.
 
-### 3. Compile the LaTeX Report
+### 4. Compile the LaTeX Report
 
 ```bash
 cd report/
@@ -125,7 +140,7 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
-Or use an editor such as Overleaf, TeXstudio, or VS Code with the LaTeX Workshop extension.
+Or open `report/main.tex` directly in Overleaf, TeXstudio, or VS Code with the LaTeX Workshop extension.
 
 ### 4. Run Helper Scripts
 

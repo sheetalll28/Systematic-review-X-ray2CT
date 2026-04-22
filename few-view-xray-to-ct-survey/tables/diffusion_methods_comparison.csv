@@ -1,0 +1,4 @@
+Method,Year,Input,Anatomy,Key_Innovation,Dataset,Key_Result,Notes
+3D Diffusion (Yoon et al.),2024,Bidirectional (2 views),Wrist / Bone,Patch-wise 3D diffusion loss; single-GPU training; patch coordinate conditioning,Institutional wrist CT,High-fidelity 3D CT synthesis on single GPU,Enables high-resolution outputs with patch-based approach
+DX2CT,2025,Mono or Biplanar,Chest CT,"3D position-aware cross-attention: E_pos(i,j,k) queries 2D features F_2D geometrically",LIDC-IDRI,SOTA on both mono- and biplanar benchmarks,Unified framework for flexible input views
+DVG-Diffusion,2026,Few-view,Chest / General,"View-param-guided encoder + view synthesis module + latent diffusion (VAE latent space)",ChestX-ray14 / LIDC,Best fidelity-perceptual balance; SOTA IEEE TIP,Addresses ill-posed nature via synthetic dual-view guidance

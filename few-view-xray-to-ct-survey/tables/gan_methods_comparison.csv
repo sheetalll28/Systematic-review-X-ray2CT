@@ -1,0 +1,9 @@
+Method,Year,Input,Anatomy,Key_Innovation,Dataset,PSNR_dB,SSIM,Dice_or_IoU,Other_Metric,Notes
+CVAE-GAN,2021,Single X-ray,Lung,Probabilistic VAE+GAN; latent uncertainty estimation,2 patient CTs,,,,,Feasibility; qualitative only
+X2CT-GAN,2019,Biplanar AP+LAT,Chest,Canonical biplanar input paradigm; 3D discriminator,LIDC-IDRI,,,,,Foundational GAN baseline
+X-CTRSNet,2022,Biplanar AP+LAT,Cervical Vertebra,SpaDRNet + MulSISNet + RSC joint recon+seg loss,Institutional CT,24.58,0.749,Dice=0.8044,,First simultaneous recon+seg from X-ray
+XctNet,2022,Single X-ray,General,Self-attention + multi-scale + 3D branch generation,Public dataset,29.28,0.8681,,,SOTA at time of publication
+TRCT-GAN,2023,Biplanar,Chest CT,Transformer multi-head attention + dynamic cross-domain attention module,ChestX-ray14 / LIDC,Improved vs baseline,Improved vs baseline,,,Superior to X2CT-GAN
+DP-GAN+B,2024,Biplanar,Lung CT,Depthwise separable convolutions; 44.17% param reduction; vector+fusion loss,Institutional CT,Comparable,Comparable,,Params: -31.9M,Lightweight for clinical deployment
+AP2CT-GAN,2025,Single AP X-ray,Chest CT,Feature Enhancement Connection (FEC) + Feature Dim Converter (FDC) + Dual-Consistency Loss,Institutional,Best single-view,Best single-view,,,Designed for ICU; single-AP setting
+PTX2CT-GAN,2025,Single X-ray,Pneumothorax Chest,Reconstruction Feature Enhancement Module (RFEM) for disease-specific features,MY-PTX-998 (998 paired),Superior,Superior,,,First disease-specific CT-from-Xray GAN

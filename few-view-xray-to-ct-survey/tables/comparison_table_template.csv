@@ -1,5 +1,15 @@
-Method,Year,Family,Input_Views,Dataset,Resolution,PSNR,SSIM,FID,Inference_Time_s,Code_Available,Notes
-X2CT-GAN,2019,GAN,2,LIDC-IDRI,128x128x128,,,,,,Biplanar AP+Lateral input
-Single-Image Tomography,2018,GAN,1,Custom (Cranial),64x64x64,,,,,,Single cranial X-ray
-NAF,2022,Neural Field,10,Custom,256x256x256,,,,,,Per-scene optimisation
-DPS,2023,Diffusion,varies,varies,,,,,,,"General inverse problem solver, adapted for CT"
+Method,Year,Era,Family,Input_Views,Anatomy,Dataset,Key_Innovation,PSNR_dB,SSIM,Dice,Other_Metric,Code_Available,Notes
+Karade et al.,2015,Classical,Contour+LSD,Biplanar,Femur,Institutional,Laplacian Surface Deformation + SOM,,,,,No,MP2S=1.2mm; 49 sec inference
+Kasten et al.,2020,Early CNN,CNN,Biplanar DRR,Knee,Institutional,Epipolar dim-augmentation end-to-end CNN,,,0.906,Chamfer=1.778mm,No,0.5 sec inference
+CVAE-GAN,2021,GAN,VAE+GAN,Single X-ray,Lung,2 patient CTs,Probabilistic VAE+GAN; uncertainty estimation,,,,,No,Feasibility study; qualitative only
+X-CTRSNet,2022,CNN+GAN,Joint Recon+Seg,Biplanar AP+LAT,Cervical Vertebra,Institutional CT,SpaDRNet + MulSISNet + RSC loss,24.58,0.749,0.8044,,No,First joint recon+seg from X-ray
+XctNet,2022,CNN,Attn-CNN,Single X-ray,General,Public dataset,Self-attention + multi-scale + 3D branch gen,29.28,0.8681,,,No,SOTA at publication
+TRCT-GAN,2023,GAN,Transformer-GAN,Biplanar,Chest CT,ChestX-ray14/LIDC,Transformer + dynamic cross-domain attention,,Improved vs X2CT-GAN,,,No,Superior to X2CT-GAN baseline
+MedNeRF,2022,NeRF,Neural Implicit,Single/few X-rays,Chest / Knee,Chest & knee CTs,Shape-depth disentanglement NeRF,,High-fidelity,,,No,Single X-ray → arbitrary CT projections
+DP-GAN+B,2024,GAN,Lightweight GAN,Biplanar,Lung CT,Institutional CT,Depthwise sep convs; 44.17% param reduction,Comparable to X2CT-GAN,Comparable,,,No,-31.9M params vs X2CT-GAN
+3D Diffusion (Yoon),2024,Diffusion,Diffusion,Bidirectional (2),Wrist/Bone,Institutional wrist,Patch-wise loss; single-GPU 3D diffusion,,High-fidelity,,,No,Enables high-res CT on single GPU
+DX2CT,2025,Diffusion,Diffusion,Mono or Biplanar,Chest CT,LIDC-IDRI,3D position-aware transformer cross-attention,,SOTA,,SOTA,No,Handles both mono and biplanar input
+AP2CT-GAN,2025,GAN,GAN,Single AP X-ray,Chest CT,Institutional,FEC + FDC + dual-consistency loss,,Best single-view,,,No,Designed for ICU scenario
+PTX2CT-GAN,2025,GAN,Disease-Specific GAN,Single X-ray,Pneumothorax,MY-PTX-998,RFEM for disease-specific features,,Superior PTX,,,No,998 pneumothorax CT/X-ray pairs
+DVG-Diffusion,2026,Diffusion,Latent Diffusion,Few-view,Chest/General,ChestX-ray14/LIDC,View synthesis + dual-view latent diffusion,,SOTA,,Best FID,No,IEEE TIP; best fidelity-perceptual balance
+X2BR,2026,NeRF/Neural Implicit,ConvNeXt+CPD,Single planar X-ray,Bone (Rib/Vertebra),Institutional bone CT,ConvNeXt occupancy + YOLOv9 + geodesic CPD,,,0.875,IoU(X2B)=0.952 Chamfer=0.005,No,No SSM needed; superior anatomical realism
