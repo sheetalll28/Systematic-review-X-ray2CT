@@ -1,6 +1,6 @@
 # A Systematic Review of Few-View X-Ray-to-CT Reconstruction: From Single-View Learning to Diffusion-Based 3D Generation
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 [![Paper Status](https://img.shields.io/badge/Status-Under%20Preparation-orange.svg)]()
 [![Survey](https://img.shields.io/badge/Type-Survey%20%2F%20Literature%20Review-green.svg)]()
 
