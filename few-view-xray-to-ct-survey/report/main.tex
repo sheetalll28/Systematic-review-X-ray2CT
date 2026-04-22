@@ -1,59 +1,1325 @@
-% ==============================================================================
-% A Systematic Review of Few-View X-Ray-to-CT Reconstruction:
-% From Single-View Learning to Diffusion-Based 3D Generation
-% ==============================================================================
-% Master document — compile this file with pdflatex + bibtex.
-% ==============================================================================
+\documentclass[10pt,twocolumn,a4paper]{article}
 
-\documentclass[11pt, a4paper]{article}
-
-% --- Packages ----------------------------------------------------------------
-\usepackage[utf8]{inputenc}
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.0cm,right=2.0cm,columnsep=0.65cm]{geometry}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
 \usepackage{graphicx}
+\usepackage{amsmath,amssymb}
 \usepackage{booktabs}
-\usepackage{hyperref}
-\usepackage{amsmath, amssymb}
-\usepackage{cite}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{array}
 \usepackage{xcolor}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{caption}
 \usepackage{float}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
 
-% --- Metadata ----------------------------------------------------------------
-\title{%
-  A Systematic Review of Few-View X-Ray-to-CT Reconstruction:\\
-  From Single-View Learning to Diffusion-Based 3D Generation%
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,backgrounds,
+                decorations.pathreplacing,calc,patterns}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}{0pt}{10pt}{5pt}
+\titlespacing*{\subsection}{0pt}{7pt}{3pt}
+
+\captionsetup{font=small,labelfont=bf,labelsep=period}
+
+\tikzset{
+  block/.style={rectangle,draw=blue!60,fill=blue!10,very thick,minimum height=1.0em,
+    minimum width=3em,text centered,rounded corners=2pt,font=\scriptsize},
+  blockG/.style={rectangle,draw=green!60!black,fill=green!10,very thick,minimum height=1.0em,
+    minimum width=3em,text centered,rounded corners=2pt,font=\scriptsize},
+  blockR/.style={rectangle,draw=red!60,fill=red!10,very thick,minimum height=1.0em,
+    minimum width=3em,text centered,rounded corners=2pt,font=\scriptsize},
+  blockO/.style={rectangle,draw=orange!70,fill=orange!10,very thick,minimum height=1.0em,
+    minimum width=3em,text centered,rounded corners=2pt,font=\scriptsize},
+  blockP/.style={rectangle,draw=purple!60,fill=purple!10,very thick,minimum height=1.0em,
+    minimum width=3em,text centered,rounded corners=2pt,font=\scriptsize},
+  arrow/.style={-{Stealth[length=5pt]},very thick,draw=gray!70},
+  darrow/.style={<->,very thick,draw=gray!70},
 }
-\author{[Author Names] \\ [Affiliation]}
-\date{\today}
 
-% ==============================================================================
 \begin{document}
 
-\maketitle
+\twocolumn[{%
+\begin{center}
+{\LARGE\bfseries From X-ray to CT: A Comprehensive Survey of 2D-to-3D Reconstruction Methods From Classical Statistical Shape Models to Generative and Neural Implicit Frameworks\par}
+\vspace{0.9em}
 
-% --- Abstract ----------------------------------------------------------------
-\input{sections/abstract}
+{\large Sheetal Lodhi\par}
+\vspace{0.4em}
 
-% --- Main sections -----------------------------------------------------------
-\input{sections/introduction}
-\input{sections/methodology}
-\input{sections/taxonomy}
-\input{sections/gan_methods}
-\input{sections/transformer_methods}
-\input{sections/neural_field_methods}
-\input{sections/diffusion_methods}
-\input{sections/datasets_and_domain_gap}
-\input{sections/comparative_analysis}
-\input{sections/future_directions}
-\input{sections/conclusion}
+{\small
+Department of Computer Science \& Engineering, Netaji Subhas University of Technology, New Delhi, India\par
+\texttt{sheetallodhi28@gmail.com}\par}
+\vspace{1.0em}
+\end{center}
 
-% --- References --------------------------------------------------------------
-\bibliographystyle{plain}
-\bibliography{references}
+\noindent\textbf{Abstract}\par
+\vspace{0.3em}
+\noindent
+The reconstruction of three-dimensional (3D) volumetric anatomical structures from two-dimensional (2D) X-ray images is a fundamental challenge in medical imaging, with profound implications for clinical diagnosis, surgical planning, and patient-specific treatment. While Computed Tomography (CT) remains the gold standard for 3D anatomical visualization, its high radiation dose, cost, and limited accessibility have driven decades of research toward deriving volumetric information from low-dose, widely available X-ray projections. This survey provides a comprehensive and chronologically organized review of 2D-to-3D reconstruction methods spanning from classical statistical shape models and geometric registration techniques through early convolutional neural networks (CNNs), to the modern era of generative adversarial networks (GANs), diffusion models, and neural radiance fields (NeRF). Building upon the foundational taxonomy established by Maken and Gupta (2023), which systematically reviewed methods up to approximately 2020, this paper extends the timeline by critically analyzing the subsequent wave of data-driven deep generative frameworks. We examine landmark GAN-based methods including CVAE-GAN, X2CT-GAN, TRCT-GAN, DP-GAN+B, AP2CT-GAN, and PTX2CT-GAN, highlighting architectural innovations and clinical targets. We document the transition toward score-based diffusion models such as DX2CT and DVG-Diffusion, and review neural radiance field approaches including MedNeRF and X2BR. For each category, we analyze architectural design choices, datasets, evaluation metrics, anatomical scope, and clinical implications. Finally, we identify persistent challenges and outline promising research directions.
+
+\vspace{0.5em}
+\noindent\textbf{Keywords:} X-ray to CT reconstruction; 2D-to-3D reconstruction; generative adversarial networks; diffusion models; neural radiance fields; medical image synthesis; deep learning; statistical shape models; volumetric reconstruction
+
+\vspace{0.8em}
+\hrule
+\vspace{1.0em}
+}]
+
+%% =========================================================
+\section{Introduction}
+\label{sec:intro}
+%% =========================================================
+
+The human body is an inherently three-dimensional anatomical structure.
+Accurate visualization of internal anatomy is indispensable for modern clinical
+practice, encompassing disease diagnosis, preoperative planning, intraoperative
+guidance, and post-treatment follow-up~\cite{maken2023}. Computed Tomography
+(CT) acquires hundreds of X-ray projections from different angles and
+reconstructs a volumetric image using filtered back-projection (FBP) or
+iterative reconstruction. The resulting volumetric data provides unambiguous
+information about internal structures, tissue densities, and spatial
+relationships.
+
+However, CT imaging carries significant drawbacks. The radiation dose associated
+with a single CT examination can be 100 to 500 times that of a conventional
+X-ray, raising substantial concerns about cumulative radiation exposure,
+particularly for pediatric patients, pregnant women, and those requiring
+repeated imaging. CT scanners are also expensive, bulky, and unavailable in
+many resource-limited healthcare settings~\cite{gupta2020}.
+
+Plain X-ray radiography is the most widely deployed medical imaging modality
+worldwide. X-ray machines are inexpensive, portable, deliver orders-of-magnitude
+lower radiation doses, and produce images within seconds. Their fundamental
+limitation, however, is that an X-ray image is a two-dimensional projection of a
+three-dimensional structure. Overlapping anatomy, loss of depth information, and
+magnification distortion all limit its diagnostic utility in complex clinical
+scenarios~\cite{maken2023}.
+
+This central tension---between the safety and accessibility of X-rays and the
+diagnostic richness of CT---has motivated decades of research into methods for
+reconstructing 3D volumetric information from 2D X-ray images. The field has
+evolved through four distinct technological eras, as illustrated in
+Fig.~\ref{fig:timeline}:
+\begin{enumerate}[leftmargin=*,topsep=2pt,itemsep=1pt]
+\item \textbf{Classical era (1990--2010):} Statistical shape models (SSMs),
+  parametric anatomical models, point-based stereo correspondence, contour-based
+  template deformation, and intensity-based registration~\cite{maken2023}.
+\item \textbf{Early CNN era (2016--2020):} Convolutional neural networks that
+  learn complex 2D-to-3D mappings directly from paired training
+  data~\cite{kasten2020,dixit2019,kim2019}.
+\item \textbf{GAN era (2019--2023):} Generative adversarial networks producing
+  sharper, more realistic volumetric outputs~\cite{x2ctgan,trctgan,dpganb}.
+\item \textbf{Diffusion / NeRF era (2022--present):} Score-based diffusion models
+  and neural radiance fields enabling high-fidelity sparse-view
+  reconstruction~\cite{dx2ct,dvgdiffusion,mednerf,x2br}.
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=0.80,every node/.style={font=\scriptsize}]
+  \draw[very thick,-{Stealth[length=7pt]}] (0,0) -- (8.6,0)
+    node[right,font=\small] {\textbf{Year}};
+  \fill[blue!12] (0,-0.4) rectangle (3.2,0.4);
+  \fill[green!12] (3.2,-0.4) rectangle (5.0,0.4);
+  \fill[orange!12] (5.0,-0.4) rectangle (6.8,0.4);
+  \fill[red!12] (6.8,-0.4) rectangle (8.5,0.4);
+  \foreach \x/\yr in {0/1990,1.6/2000,3.2/2010,4.1/2016,5.0/2019,5.9/2021,6.8/2023,7.7/2025}{
+    \draw (\x,-0.45) -- (\x,0.45);
+    \node[below] at (\x,-0.45) {\yr};
+  }
+  \node[blue!70!black,font=\scriptsize\bfseries] at (1.6,0)
+    {Classical / SSM};
+  \node[green!60!black,font=\scriptsize\bfseries] at (4.1,0)
+    {CNN};
+  \node[orange!70!black,font=\scriptsize\bfseries] at (5.9,0)
+    {GAN};
+  \node[red!60!black,font=\scriptsize\bfseries] at (7.65,0)
+    {Diff./NeRF};
+\end{tikzpicture}
+\caption{Chronological evolution of 2D X-ray to 3D CT reconstruction methods
+across four distinct eras.}
+\label{fig:timeline}
+\end{figure}
+
+The specific contributions of this paper are: (1) a unified recapitulation of
+classical and early-CNN methods establishing a common chronological baseline;
+(2) a structured review of GAN-based methods with detailed architecture
+diagrams; (3) analysis of the transition from GANs to diffusion models;
+(4) a review of neural radiance field approaches; and (5) a cross-cutting
+comparative analysis and discussion of open challenges.
+
+The remainder of this paper is organized as follows. Section~\ref{sec:past}
+recapitulates past work. Section~\ref{sec:gan} covers GAN-based methods.
+Section~\ref{sec:diffusion} discusses diffusion-based approaches.
+Section~\ref{sec:nerf} reviews neural radiance field methods.
+Section~\ref{sec:cnn} presents complementary CNN approaches.
+Section~\ref{sec:comparison} provides comparative analysis.
+Section~\ref{sec:challenges} discusses challenges and future directions.
+Section~\ref{sec:conclusion} concludes the paper.
+
+%% =========================================================
+\section{Recapitulation of Past Work: From Statistical Models to Early CNNs}
+\label{sec:past}
+%% =========================================================
+
+Before examining the modern generative era, it is essential to situate it
+within the trajectory of earlier methods. The foundational review by Maken and
+Gupta~\cite{maken2023} provides the most comprehensive taxonomy of pre-2020
+approaches across six categories: intensity-based methods, statistical shape
+models, articulated anatomical models, free-form and hierarchical deformation,
+convolutional neural networks, and hybrid methods. Figure~\ref{fig:general_pipeline}
+illustrates the general pipeline for 3D reconstruction from X-ray images.
+
+\begin{figure}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[node distance=0.35cm and 0.2cm]
+  \node[block,text width=1.3cm,minimum height=0.85cm] (acq)
+    {X-ray\\ Acq.\\ (1--2 views)};
+  \node[block,text width=1.3cm,minimum height=0.85cm,right=of acq] (enh)
+    {Image\\ Enhance-\\ ment};
+  \node[block,text width=1.3cm,minimum height=0.85cm,right=of enh] (seg)
+    {Contour\\ Extract.\\ (Seg.)};
+  \node[block,text width=1.3cm,minimum height=0.85cm,right=of seg] (reg)
+    {2D/3D\\ Corresp.\\ \& Reg.};
+  \node[blockG,text width=1.3cm,minimum height=0.85cm,right=of reg] (rec)
+    {3D\\ Recon-\\ struction};
+  \node[blockG,text width=1.2cm,minimum height=0.85cm,right=of rec] (out)
+    {3D Vol.\\ / Mesh\\ Output};
+  \foreach \a/\b in {acq/enh,enh/seg,seg/reg,reg/rec,rec/out}
+    {\draw[arrow] (\a) -- (\b);}
+\end{tikzpicture}}
+\caption{General pipeline for 3D anatomical reconstruction from 2D X-ray
+images applicable across all method categories~\cite{maken2023}.}
+\label{fig:general_pipeline}
+\end{figure}
+
+\subsection{Statistical Shape Models (SSMs) and Parametric Approaches}
+\label{sec:past:ssm}
+
+Statistical Shape Models, pioneered by Cootes et al.~\cite{cootes1992} through
+Point Distribution Models (PDMs), represent anatomical shape as a mean shape
+plus a weighted combination of principal components of shape variation:
+\begin{equation}
+\mathbf{S}' = M\bar{S} + M\sum_{j=1}^{s} f(\lambda_j)\mathbf{P}_j,\quad
+f(\lambda_j) = a_j = \sqrt{\lambda_j}
+\label{eq:ssm}
+\end{equation}
+where $\bar{S}$ is the population mean shape, $\mathbf{P}_j$ are eigenvectors,
+$\lambda_j$ are eigenvalues from PCA, and $a_j$ are weight vectors. The
+covariance matrix is:
+\begin{equation}
+\text{Cov} = \frac{1}{p-1}\sum_{i=1}^{p}(S_i - \bar{S})(S_i - \bar{S})^T
+\label{eq:cov}
+\end{equation}
+Figure~\ref{fig:ssm_pipeline} illustrates the SSM-based reconstruction pipeline.
+
+\begin{figure}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[node distance=0.3cm and 0.2cm]
+  \node[blockO,text width=1.4cm,minimum height=0.75cm] (ct) {CT Training DB};
+  \node[blockO,text width=1.4cm,minimum height=0.75cm,right=of ct] (seg2)
+    {Seg. \& Land-\\ marking};
+  \node[blockO,text width=1.3cm,minimum height=0.75cm,right=of seg2] (pca)
+    {PCA\\ (Eq.~\ref{eq:cov})};
+  \node[blockO,text width=1.3cm,minimum height=0.75cm,right=of pca] (ssm)
+    {SSM\\ Build};
+  \foreach \a/\b in {ct/seg2,seg2/pca,pca/ssm}{\draw[arrow] (\a) -- (\b);}
+  \node[above=0.1cm of ct,font=\tiny\bfseries,orange!80!black]
+    {\textit{Training Phase}};
+
+  \node[block,text width=1.4cm,minimum height=0.75cm,below=0.8cm of ct] (xray)
+    {Patient X-ray};
+  \node[block,text width=1.3cm,minimum height=0.75cm,right=of xray] (cont)
+    {Contour Extract.};
+  \node[block,text width=1.3cm,minimum height=0.75cm,right=of cont] (fit)
+    {SSM Fit\\ (opt. $a_j$)};
+  \node[blockG,text width=1.3cm,minimum height=0.75cm,right=of fit] (vol)
+    {3D Surface};
+  \foreach \a/\b in {xray/cont,cont/fit,fit/vol}{\draw[arrow] (\a) -- (\b);}
+  \node[below=0.1cm of xray,font=\tiny\bfseries,blue!70!black]
+    {\textit{Inference Phase}};
+  \draw[arrow,dashed,orange!60] (ssm.south) -- ++(0,-0.25) -| (fit.north);
+\end{tikzpicture}}
+\caption{SSM-based reconstruction pipeline. An SSM is built offline from CT
+training data via PCA. At inference time, SSM parameters are optimized to match
+X-ray contours, yielding a patient-specific 3D surface model~\cite{lamecker2006,zheng2010}.}
+\label{fig:ssm_pipeline}
+\end{figure}
+
+Lamecker et al.~\cite{lamecker2006} demonstrated SSM-based reconstruction of
+the pelvic bone from synthetically generated X-rays, achieving symmetric mean
+errors of approximately 1.3--2.6\,mm. Zheng~\cite{zheng2010} extended this to
+single-view AP X-ray reconstruction of the pelvis using a hybrid 2D/3D
+deformable registration strategy. Zhu and Li~\cite{zhu2011} applied enhanced
+SSM with 2D/3D registration to the distal femur, reporting an overall average
+absolute error of 0.90\,mm. Parametric model-based reconstruction (Humbert et
+al.~\cite{humbert2009} for spine; Chaibi et al.~\cite{chaibi2012} for lower
+limb) adjusts anatomically meaningful parameters to fit radiographic
+projections, achieving reconstruction times of 2--10\,minutes.
+
+\subsection{Template Deformation Methods}
+\label{sec:past:deform}
+
+Template deformation approaches deform a canonical 3D mesh model until its
+projected silhouette matches X-ray contours. Free-form deformation (FFD) was
+demonstrated by Koh et al.~\cite{koh2011} for femur reconstruction. Hierarchical
+FFD by Gunay et al.~\cite{gunay2007} applies multi-resolution deformation for
+surgical osteotomy planning. Karade and Ravi~\cite{karade2015} introduced
+Laplacian Surface Deformation (LSD) with Self-Organizing Maps (SOM) for 2D/3D
+correspondence, achieving mean point-to-surface distance of 1.2\,mm in under
+49\,seconds.
+
+\subsection{Early CNN-Based Methods}
+\label{sec:past:cnn}
+
+The transition to data-driven approaches began with CNNs. Dixit et
+al.~\cite{dixit2019} proposed a feed-forward CNN to reconstruct 3D femur models
+from 30 X-ray samples. Kim et al.~\cite{kim2019} combined CNN-based feature
+detection (YOLO v3 and Faster R-CNN) with SSM fitting for leg bone
+reconstruction, achieving 187-second computation time. The landmark contribution
+from Kasten et al.~\cite{kasten2020} introduced an end-to-end CNN for 3D knee
+bone reconstruction from biplanar X-rays using dimensional augmentation that
+back-projects epipolar line pairs into a two-channeled epipolar plane, achieving
+a Dice coefficient of 0.906 with 0.5-second inference---a step change in
+reconstruction speed.
+
+%% =========================================================
+\section{GAN-Based Methods for X-ray to CT Reconstruction}
+\label{sec:gan}
+%% =========================================================
+
+Generative Adversarial Networks (GANs)~\cite{goodfellow2014} consist of a
+generator $G$ trained to synthesize realistic outputs and a discriminator $D$
+trained to distinguish real from generated samples. In medical image synthesis,
+adversarial training produces volumetric CT outputs with sharper detail and more
+realistic texture than pure regression-based methods. Figure~\ref{fig:gan_overview}
+illustrates the general GAN architecture for X-ray to CT synthesis.
+
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[node distance=0.45cm and 0.45cm,
+    every node/.style={font=\scriptsize}]
+  %% INPUTS
+  \node[block,text width=1.3cm,minimum height=1.1cm] (ap) {AP\\ X-ray};
+  \node[block,text width=1.3cm,minimum height=1.1cm,below=0.3cm of ap] (lat)
+    {LAT\\ X-ray};
+  %% 2D ENCODERS
+  \node[blockO,text width=1.5cm,minimum height=1.1cm,right=0.5cm of ap] (encA)
+    {2D Encoder\\ Branch A};
+  \node[blockO,text width=1.5cm,minimum height=1.1cm,right=0.5cm of lat] (encB)
+    {2D Encoder\\ Branch B};
+  \draw[arrow] (ap) -- (encA);
+  \draw[arrow] (lat) -- (encB);
+  %% FUSION
+  \node[blockO,text width=1.5cm,minimum height=2.7cm,
+    right=0.5cm of encA,yshift=-0.7cm] (fuse)
+    {Feature\\ Fusion\\ (Concat /\\ Attention)};
+  \draw[arrow] (encA) -- (fuse);
+  \draw[arrow] (encB) -- (fuse);
+  %% GENERATOR
+  \node[blockG,text width=1.8cm,minimum height=2.7cm,
+    right=0.5cm of fuse] (gen)
+    {\textbf{Generator}\\ G\\ 3D Decoder\\ (Conv3D /\\ Transformer)};
+  \draw[arrow] (fuse) -- (gen);
+  %% OUTPUTS
+  \node[blockG,text width=1.3cm,minimum height=1.1cm,
+    right=0.5cm of gen,yshift=0.8cm] (fake) {Synth. CT\\ $\hat{V}$};
+  \node[block,text width=1.3cm,minimum height=1.1cm,
+    right=0.5cm of gen,yshift=-0.8cm] (real) {Real CT\\ $V$};
+  \draw[arrow] (gen) -- (fake);
+  %% DISCRIMINATOR
+  \node[blockR,text width=1.8cm,minimum height=2.7cm,
+    right=0.5cm of fake,yshift=-0.8cm] (disc)
+    {\textbf{Discriminator}\\ D\\ 3D-PatchGAN\\ Real / Fake};
+  \draw[arrow] (fake) -- (disc);
+  \draw[arrow] (real) -- (disc);
+  %% LOSSES
+  \node[blockR,text width=1.6cm,minimum height=0.75cm,
+    right=0.5cm of disc,yshift=0.9cm] (ladv) {$\mathcal{L}_\text{adv}$};
+  \node[blockP,text width=1.6cm,minimum height=0.75cm,below=0.2cm of ladv] (lperc)
+    {$\mathcal{L}_\text{perceptual}$};
+  \node[blockO,text width=1.6cm,minimum height=0.75cm,below=0.2cm of lperc] (ll1)
+    {$\mathcal{L}_{L_1}$};
+  \node[blockR,text width=2.0cm,minimum height=0.75cm,below=0.25cm of ll1] (ltot)
+    {$\mathcal{L}_\text{total}$};
+  \draw[arrow] (disc) -- (ladv);
+  \draw[arrow] (ladv.south) -- (lperc.north);
+  \draw[arrow] (lperc.south) -- (ll1.north);
+  \draw[arrow] (ll1.south) -- (ltot.north);
+  \draw[arrow,dashed,draw=red!50] (ladv.west) -- ++(-0.25,0) |- (gen.east)
+    node[pos=0.2,right,font=\tiny,red!50] {update G};
+  %% DRR consistency
+  \node[blockP,text width=1.5cm,minimum height=0.7cm,below=0.5cm of gen] (drr)
+    {DRR Proj.\\ Consistency};
+  \draw[arrow,dashed] (gen.south) -- (drr.north);
+  \draw[arrow,dashed] (drr.east) -| (lperc.south);
+  %% Background boxes
+  \begin{scope}[on background layer]
+    \node[draw=orange!40,fill=orange!5,rounded corners,
+      inner sep=4pt,fit=(encA)(encB)(fuse)(gen),
+      label={[font=\small\bfseries,orange!80!black]above:Generator (G)}] {};
+    \node[draw=red!40,fill=red!5,rounded corners,
+      inner sep=4pt,fit=(disc)(ladv)(lperc)(ll1)(ltot),
+      label={[font=\small\bfseries,red!70]above:Discriminator (D)}] {};
+  \end{scope}
+\end{tikzpicture}
+\caption{General GAN-based architecture for X-ray to CT reconstruction.
+Biplanar AP and LAT X-rays are independently encoded, fused, and decoded by a
+3D generator. The discriminator distinguishes real from generated volumes.
+Multiple loss terms ($\mathcal{L}_\text{adv}$, $\mathcal{L}_\text{perceptual}$,
+$\mathcal{L}_{L_1}$) jointly optimize the generator~\cite{x2ctgan,trctgan}.}
+\label{fig:gan_overview}
+\end{figure*}
+
+\subsection{Foundational Architecture: X2CT-GAN}
+\label{sec:gan:x2ct}
+
+X2CT-GAN established the canonical biplanar X-ray input paradigm for
+GAN-based volumetric synthesis. Taking orthogonal anteroposterior (AP) and
+lateral (LAT) chest X-ray images as input, it generates a full 3D chest CT
+volume via two separate 2D-to-3D encoding branches followed by feature fusion
+and a 3D decoder. The discriminator operates on both 2D projections of the
+generated volume and the 3D volume itself, exploiting complementary depth
+information from perpendicular views.
+
+\subsection{CVAE-GAN: Probabilistic 3D CT Reconstruction}
+\label{sec:gan:cvae}
+
+Jiang et al.~\cite{cvaegan} proposed a Conditional Variational Autoencoder
+combined with a GAN discriminator (CVAE-GAN) for 3D CT reconstruction from a
+single X-ray, specifically targeting respiratory motion management in
+radiotherapy. The encoder maps a 2D X-ray projection into a latent distribution
+$(\mu, \sigma^2)$, from which a latent vector $\mathbf{z} \sim \mathcal{N}(\mu,
+\sigma^2)$ is sampled and decoded into a 3D CT volume. The training objective
+is:
+\begin{equation}
+\mathcal{L} = \mathcal{L}_\text{recon} + \beta\,D_\text{KL}
+\!\bigl(\mathcal{N}(\mu,\sigma^2)\,\|\,\mathcal{N}(0,I)\bigr)
++ \mathcal{L}_\text{adv}
+\label{eq:cvae}
+\end{equation}
+By sampling from a learned latent distribution, the CVAE component enables
+representing the inherent ambiguity in reconstructing 3D anatomy from a single
+2D projection, providing a clinically valuable implicit uncertainty estimate.
+
+\subsection{TRCT-GAN: Transformer-Enhanced Biplanar Reconstruction}
+\label{sec:gan:trct}
+
+Wang et al.~\cite{trctgan} proposed TRCT-GAN, which enhances biplanar X-ray
+feature representation through transformer modules. While convolutional
+operations capture local spatial patterns efficiently, they struggle to model
+long-range dependencies such as the relationship between the left and right lung
+fields. TRCT-GAN incorporates a Transformer module within the generator to
+capture global contextual relationships, and a dynamic attention module to
+exploit both 2D and 3D feature maps. Figure~\ref{fig:trct} illustrates the
+dynamic attention mechanism.
+
+\begin{figure}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[node distance=0.35cm and 0.3cm]
+  \node[block,text width=1.3cm,minimum height=0.8cm] (xA) {AP X-ray};
+  \node[block,text width=1.3cm,minimum height=0.8cm,below=0.3cm of xA] (xL)
+    {LAT X-ray};
+  \node[blockP,text width=1.6cm,minimum height=2.0cm,
+    right=0.4cm of xA,yshift=-0.55cm] (trans)
+    {Transformer\\ Multi-Head\\ Self-Attention};
+  \draw[arrow] (xA) -- (trans);
+  \draw[arrow] (xL) -- (trans);
+  \node[blockO,text width=1.5cm,minimum height=0.8cm,
+    right=0.4cm of trans,yshift=0.6cm] (f2d) {2D Feature\\ $F_{2D}$};
+  \node[blockG,text width=1.5cm,minimum height=0.8cm,
+    right=0.4cm of trans,yshift=-0.6cm] (f3d) {3D Feature\\ $F_{3D}$};
+  \draw[arrow] (trans) -- (f2d);
+  \draw[arrow] (trans) -- (f3d);
+  \node[blockR,text width=1.7cm,minimum height=2.0cm,
+    right=0.4cm of f2d,yshift=-0.45cm] (dyn)
+    {Dynamic\\ Attention\\ Module\\ (Cross-Domain)};
+  \draw[arrow] (f2d) -- (dyn);
+  \draw[arrow] (f3d) -- (dyn);
+  \node[blockG,text width=1.3cm,minimum height=0.8cm,right=0.4cm of dyn]
+    (out) {CT Volume};
+  \draw[arrow] (dyn) -- (out);
+\end{tikzpicture}}
+\caption{TRCT-GAN architecture~\cite{trctgan}. A Transformer module captures
+long-range X-ray dependencies. A Dynamic Attention Module bridges 2D input
+features and 3D volumetric output features through cross-domain contextual
+association.}
+\label{fig:trct}
+\end{figure}
+
+\subsection{DP-GAN+B: Lightweight GAN with Depthwise Separable Convolutions}
+\label{sec:gan:dpgan}
+
+Xing et al.~\cite{dpganb} introduced DP-GAN+B to address the computational
+efficiency bottleneck limiting clinical deployment. DP-GAN+B replaces standard
+convolutions with depthwise separable convolutions:
+\begin{equation}
+\text{Params}_\text{DW-Sep} = D_K^2 C_\text{in} + C_\text{in} C_\text{out}
+\ll D_K^2 C_\text{in} C_\text{out} = \text{Params}_\text{Std}
+\label{eq:dwsep}
+\end{equation}
+achieving a parameter reduction of 31.924 million (44.17\%) compared to
+X2CT-GAN baseline, while also introducing vector loss and fusion loss components.
+
+\subsection{AP2CT-GAN: Single AP View Reconstruction for ICU Settings}
+\label{sec:gan:ap2ct}
+
+Tang et al.~\cite{ap2ctgan} proposed AP2CT-GAN for the ICU clinical scenario
+where only a single anteroposterior (AP) chest X-ray can practically be
+acquired. Two key modules are introduced: the Feature Enhancement Connection
+(FEC) module amplifying anatomically informative regions, and the Feature
+Dimension Converter (FDC) module bridging 2D and 3D domains. A Dual-Consistency
+Loss enforces structural and textural consistency:
+\begin{equation}
+\mathcal{L}_\text{DC} = \alpha\,\mathcal{L}_\text{struct}
++ (1-\alpha)\,\mathcal{L}_\text{texture}
+\label{eq:dcloss}
+\end{equation}
+
+\subsection{PTX2CT-GAN: Disease-Specific GAN for Pneumothorax}
+\label{sec:gan:ptx}
+
+Wang et al.~\cite{ptx2ctgan} presented PTX2CT-GAN targeting reconstruction of
+3D chest CT from a single X-ray in the context of pneumothorax (PTX). The
+Reconstruction Feature Enhancement Module (RFEM) improves feature extraction
+specifically for pathological pneumothorax features. Trained and validated on
+the MY-PTX-998 dataset (998 pneumothorax chest X-rays with paired CT),
+PTX2CT-GAN demonstrates the value of disease-specific architectural design.
+
+Table~\ref{tab:gan_comparison} summarizes all GAN-based methods reviewed.
+
+\begin{table*}[t]
+\caption{Comparison of GAN-Based X-ray to CT Reconstruction Methods}
+\label{tab:gan_comparison}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llllp{2.6cm}p{2.0cm}p{2.8cm}@{}}
+\toprule
+\textbf{Method} & \textbf{Year} & \textbf{Input} & \textbf{Region} &
+\textbf{Key Innovation} & \textbf{Dataset} & \textbf{Performance}\\
+\midrule
+CVAE-GAN~\cite{cvaegan} & 2021 & Single X-ray & Lung &
+  Probabilistic VAE + GAN; uncertainty estimation & 2 patient CTs &
+  Feasibility; qualitative assessment\\
+X-CTRSNet~\cite{xctrsnet} & 2022 & Biplanar AP+LAT & C-Vertebra &
+  Joint recon.\ + segmentation (RSC loss) & Institutional CT &
+  PSNR=24.58\,dB, SSIM=0.749, Dice=80.44\%\\
+XctNet~\cite{xctnet} & 2022 & Single X-ray & General &
+  Self-attn.\ + multi-scale + 3D branch gen. & Public dataset &
+  PSNR=29.28\,dB, SSIM=0.8681\\
+TRCT-GAN~\cite{trctgan} & 2023 & Biplanar & Chest CT &
+  Transformer + dynamic cross-domain attention & ChestX-ray14/LIDC &
+  Improved SSIM/PSNR vs X2CT-GAN\\
+DP-GAN+B~\cite{dpganb} & 2024 & Biplanar & Lung CT &
+  Depthwise sep.\ convs.; 44.17\% param reduction & Institutional CT &
+  Comparable quality; $-31.9$M params\\
+AP2CT-GAN~\cite{ap2ctgan} & 2025 & Single AP & Chest CT &
+  FEC + FDC + dual-consistency loss & Institutional &
+  Best single-view metrics vs baselines\\
+PTX2CT-GAN~\cite{ptx2ctgan} & 2025 & Single X-ray & Pneumothorax &
+  RFEM for disease-specific features & MY-PTX-998 &
+  Superior PTX-specific quantitative metrics\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =========================================================
+\section{Diffusion Models for X-ray to CT Reconstruction}
+\label{sec:diffusion}
+%% =========================================================
+
+Diffusion models (DDPMs)~\cite{ho2020ddpm} operate by learning to reverse a
+gradual noising process. During training, Gaussian noise is progressively added
+to clean data over $T$ timesteps:
+\begin{equation}
+q(\mathbf{x}_t|\mathbf{x}_{t-1}) =
+\mathcal{N}\!\bigl(\mathbf{x}_t;\sqrt{1-\beta_t}\mathbf{x}_{t-1},\beta_t\mathbf{I}\bigr)
+\label{eq:forward}
+\end{equation}
+The model learns to reverse this process, conditioned on X-ray images
+$\mathbf{c}$:
+\begin{equation}
+p_\theta(\mathbf{x}_{t-1}|\mathbf{x}_t, \mathbf{c}) =
+\mathcal{N}\!\bigl(\mathbf{x}_{t-1};\mu_\theta(\mathbf{x}_t,t,\mathbf{c}),\Sigma_\theta\bigr)
+\label{eq:reverse}
+\end{equation}
+Diffusion models offer several advantages over GANs: training is stable (no
+adversarial game), mode coverage is better, and iterative refinement allows
+progressive improvement of reconstruction quality. Figure~\ref{fig:diffusion_overview}
+illustrates the diffusion-based reconstruction framework.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[node distance=0.45cm and 0.4cm,
+    every node/.style={font=\scriptsize}]
+  %% FORWARD PROCESS (top row)
+  \node[blockG,text width=1.2cm,minimum height=0.9cm] (ct0)
+    {CT Vol.\\ $\mathbf{x}_0$};
+  \node[blockO,text width=1.2cm,minimum height=0.9cm,right=0.45cm of ct0]
+    (ct1) {$\mathbf{x}_1$\\ (slight\\ noise)};
+  \node[blockO,text width=1.2cm,minimum height=0.9cm,right=0.45cm of ct1]
+    (ct2) {$\mathbf{x}_t$\\ (partial\\ noise)};
+  \node[blockR,text width=1.2cm,minimum height=0.9cm,right=0.45cm of ct2]
+    (ctT) {$\mathbf{x}_T$\\ (pure\\ Gaussian)};
+  \draw[arrow] (ct0) -- node[above,font=\tiny]{$q(\mathbf{x}_t|\mathbf{x}_{t-1})$} (ct1);
+  \draw[arrow,dashed] (ct1) -- (ct2);
+  \draw[arrow,dashed] (ct2) -- (ctT);
+  \node[above=0.1cm of ct0,orange!80!black,font=\scriptsize\bfseries]
+    {Forward Process (noising) $\longrightarrow$};
+
+  %% REVERSE PROCESS (bottom row)
+  \node[blockR,text width=1.2cm,minimum height=0.9cm,
+    below=1.4cm of ctT] (rT) {$\mathbf{x}_T$\\ noise};
+  \node[blockP,text width=1.2cm,minimum height=0.9cm,left=0.45cm of rT]
+    (rt) {$\mathbf{x}_t$\\ denoise};
+  \node[blockP,text width=1.2cm,minimum height=0.9cm,left=0.45cm of rt]
+    (r1) {$\mathbf{x}_1$\\ almost\\ clean};
+  \node[blockG,text width=1.2cm,minimum height=0.9cm,left=0.45cm of r1]
+    (r0) {$\hat{\mathbf{x}}_0$\\ synth.\ CT};
+  \draw[arrow] (rT) -- node[above,font=\tiny]
+    {$p_\theta(\mathbf{x}_{t-1}|\mathbf{x}_t,\mathbf{c})$} (rt);
+  \draw[arrow,dashed] (rt) -- (r1);
+  \draw[arrow,dashed] (r1) -- (r0);
+  \node[below=0.1cm of rT,purple!80!black,font=\scriptsize\bfseries]
+    {$\longleftarrow$ Reverse Process (denoising, conditioned on X-ray)};
+
+  %% CONDITIONING
+  \node[block,text width=1.8cm,minimum height=0.9cm,
+    below=0.4cm of ct2] (xraya) {X-ray(s)\\ (AP / LAT)};
+  \node[blockP,text width=2.0cm,minimum height=0.9cm,
+    right=0.4cm of xraya] (enc2)
+    {Position-Aware\\ X-ray Encoder\\ (Transformer)};
+  \draw[arrow] (xraya) -- (enc2);
+  \draw[arrow,dashed,purple!60] (enc2.north)
+    -- ++(0,0.25) -| (rt.south)
+    node[pos=0.1,right,font=\tiny,purple!60]{cond.\ $\mathbf{c}$};
+
+  %% Denoising network label
+  \node[blockP,text width=1.7cm,minimum height=0.8cm,
+    above=0.3cm of rt] (dnet) {Denoising Net\\ $\epsilon_\theta(\mathbf{x}_t,t,\mathbf{c})$};
+  \draw[darrow,gray!40] (rt) -- (dnet);
+\end{tikzpicture}
+\caption{Diffusion model framework for X-ray to CT reconstruction. The forward
+process progressively adds Gaussian noise ($\mathbf{x}_0 \rightarrow
+\mathbf{x}_T$, Eq.~\ref{eq:forward}). The conditioned reverse process
+denoises from pure Gaussian noise to produce synthetic CT
+$\hat{\mathbf{x}}_0$~\cite{dx2ct,dvgdiffusion,yoon2024}.}
+\label{fig:diffusion_overview}
+\end{figure*}
+
+\subsection{DX2CT: Positional-Aware Diffusion for Bi/Mono-Planar Reconstruction}
+\label{sec:diffusion:dx2ct}
+
+Jeong et al.~\cite{dx2ct} proposed DX2CT, a conditional diffusion model for 3D
+CT reconstruction from either biplanar or monoplanar X-ray images. DX2CT
+resolves the positional ambiguity of prior GAN-based methods through two key
+innovations. First, a novel transformer modulates 2D X-ray feature maps with 3D
+positional information of the CT volume via positional embeddings:
+\begin{equation}
+\mathbf{F}_{3D}^{pos}(i,j,k) = \text{CrossAttn}\bigl(
+\mathbf{E}_{pos}(i,j,k),\,\mathbf{F}_{2D}\bigr)
+\label{eq:dx2ct}
+\end{equation}
+where $\mathbf{E}_{pos}(i,j,k)$ are 3D positional encodings of CT voxel
+$(i,j,k)$ querying relevant 2D X-ray features $\mathbf{F}_{2D}$ in a
+geometrically principled manner. Second, these position-aware features condition
+the diffusion denoising network at each reverse step. Experiments on both
+biplanar and monoplanar X-ray benchmark datasets demonstrate that DX2CT
+outperforms several state-of-the-art methods.
+
+\subsection{DVG-Diffusion: Dual-View Guided Latent Diffusion}
+\label{sec:diffusion:dvg}
+
+Xie et al.~\cite{dvgdiffusion} proposed DVG-Diffusion, a dual-view guided
+diffusion model that directly addresses the ill-posed nature of mapping few-view
+2D X-rays to 3D CT. The core insight is that a synthetic additional view can be
+generated and used alongside the real view to jointly guide reconstruction.
+DVG-Diffusion consists of three components: (1)~a view-parameter-guided encoder
+extracting geometrically consistent features from real X-ray images;
+(2)~a novel view synthesis module generating a synthetic X-ray from a different
+angle; and (3)~a latent diffusion model conditioned on dual-view features,
+operating in the compressed latent space of a pre-trained VAE. Figure~\ref{fig:dvg}
+illustrates this architecture.
+
+\begin{figure}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[node distance=0.35cm and 0.3cm]
+  \node[block,text width=1.4cm,minimum height=0.75cm] (realX)
+    {Real X-ray\\ (view $\phi_1$)};
+  \node[blockO,text width=1.5cm,minimum height=0.75cm,right=0.35cm of realX]
+    (venc) {View-Param\\ Guided Enc.};
+  \draw[arrow] (realX) -- (venc);
+  \node[blockO,text width=1.4cm,minimum height=0.65cm,above=0.25cm of venc]
+    (vpar) {View Params\\ $(\phi_1, d_{sd})$};
+  \draw[arrow] (vpar) -- (venc);
+  \node[blockP,text width=1.5cm,minimum height=0.75cm,below=0.25cm of venc]
+    (vsyn) {View Synth.\\ Module\\ ($\hat{\phi}_2$)};
+  \draw[arrow] (venc) -- (vsyn);
+  \node[blockG,text width=1.4cm,minimum height=1.6cm,
+    right=0.35cm of venc,yshift=-0.35cm] (cat) {Dual-View\\ Feature\\ Concat};
+  \draw[arrow] (venc) -- (cat);
+  \draw[arrow] (vsyn) -- (cat);
+  \node[blockP,text width=1.4cm,minimum height=0.75cm,
+    right=0.35cm of cat,yshift=0.35cm] (vae) {VAE Latent\\ Encoder};
+  \draw[arrow] (cat) -- (vae);
+  \node[blockR,text width=1.4cm,minimum height=0.75cm,right=0.35cm of vae]
+    (ldm) {Latent Diff.\\ Model};
+  \draw[arrow] (vae) -- (ldm);
+  \node[blockG,text width=1.4cm,minimum height=0.75cm,right=0.35cm of ldm]
+    (vdec) {VAE Dec.\\ $\hat{V}$};
+  \draw[arrow] (ldm) -- (vdec);
+\end{tikzpicture}}
+\caption{DVG-Diffusion architecture~\cite{dvgdiffusion}. A view-parameter-guided
+encoder and view synthesis module generate dual-view features conditioning a
+Latent Diffusion Model (LDM) operating in VAE latent space.}
+\label{fig:dvg}
+\end{figure}
+
+\subsection{High-Resolution 3D CT Synthesis Using Patch-Based Diffusion}
+\label{sec:diffusion:yoon}
+
+Yoon et al.~\cite{yoon2024} proposed a 3D diffusion model for synthesizing
+high-resolution CT volumes from bidirectional X-ray images, targeting orthopedic
+applications (wrist fractures). To address computational cost, the 3D diffusion
+model is trained using patch-wise loss---operating on volumetric patches rather
+than the full CT volume, enabling single-GPU training. Patch coordinate
+information compensates for limited training examples by providing spatial
+context within the conditioning signal.
+
+Table~\ref{tab:diffusion_comparison} summarizes diffusion-based methods.
+
+\begin{table*}[t]
+\caption{Comparison of Diffusion-Based X-ray to CT Reconstruction Methods}
+\label{tab:diffusion_comparison}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llllp{2.8cm}p{2.0cm}p{3.0cm}@{}}
+\toprule
+\textbf{Method} & \textbf{Year} & \textbf{Input} & \textbf{Region} &
+\textbf{Key Innovation} & \textbf{Dataset} & \textbf{Key Result}\\
+\midrule
+3D Diffusion~\cite{yoon2024} & 2024 & Bidirectional (2) & Wrist/Bone CT &
+  Patch-wise loss; single-GPU; high-res synthesis & Institutional wrist &
+  High-fidelity 3D CT; single GPU feasible\\
+DX2CT~\cite{dx2ct} & 2025 & Mono or biplanar & Chest CT &
+  3D position-aware transformer conditioning & LIDC-IDRI &
+  SOTA on bi- and mono-planar benchmarks\\
+DVG-Diffusion~\cite{dvgdiffusion} & 2026 & Few-view & Chest/General &
+  View synthesis + dual-view latent diffusion & ChestX-ray14/LIDC &
+  Best fidelity-perceptual balance; SOTA IEEE TIP\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =========================================================
+\section{Neural Radiance Fields for Medical 3D Reconstruction}
+\label{sec:nerf}
+%% =========================================================
+
+Neural Radiance Fields (NeRF)~\cite{nerf2020} learn a continuous implicit
+function mapping a 3D position and viewing direction to density and radiance.
+In medical imaging, CT volumes can be interpreted as 3D density fields, and
+X-ray projections as rendered views. New views are synthesized via volumetric
+rendering:
+\begin{equation}
+C(\mathbf{r}) = \int_{t_n}^{t_f} T(t)\,\sigma(\mathbf{r}(t))\,
+\mathbf{c}(\mathbf{r}(t),\mathbf{d})\,dt, \quad
+T(t) = e^{-\int_{t_n}^{t}\sigma(\mathbf{r}(s))\,ds}
+\label{eq:nerf}
+\end{equation}
+Figure~\ref{fig:nerf_arch} illustrates the NeRF framework adapted for medical
+imaging.
+
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[node distance=0.45cm and 0.5cm,
+    every node/.style={font=\scriptsize}]
+  \node[block,text width=1.3cm,minimum height=0.9cm] (xray) {Single\\ X-ray};
+  \node[blockO,text width=1.7cm,minimum height=0.9cm,right=0.5cm of xray]
+    (enc) {2D CNN Encoder\\ (ConvNeXt /\\ ResNet)};
+  \draw[arrow] (xray) -- (enc);
+  \node[blockO,text width=1.4cm,minimum height=0.9cm,right=0.5cm of enc]
+    (latent) {Latent Code\\ $\mathbf{z}$};
+  \draw[arrow] (enc) -- (latent);
+  \node[blockP,text width=1.4cm,minimum height=0.9cm,below=0.9cm of latent]
+    (pos) {3D Query\\ $(x,y,z)$\\ direction $\mathbf{d}$};
+  \node[blockP,text width=2.0cm,minimum height=1.8cm,
+    right=0.5cm of latent,yshift=-0.45cm] (mlp)
+    {\textbf{NeRF MLP}\\
+    $F_\theta(x,y,z,\mathbf{d}\,|\,\mathbf{z})$\\[3pt]
+    $\downarrow$\\ $(\sigma,\mathbf{c})$};
+  \draw[arrow] (latent) -- (mlp);
+  \draw[arrow] (pos) -- (mlp);
+  \node[blockG,text width=1.7cm,minimum height=0.9cm,
+    right=0.5cm of mlp] (render) {Volumetric\\ Rendering\\ (Eq.~\ref{eq:nerf})};
+  \draw[arrow] (mlp) -- (render);
+  \node[blockG,text width=1.4cm,minimum height=0.9cm,
+    right=0.5cm of render,yshift=0.5cm] (ctout) {Synth.\ CT\\ Projection\\ $\hat{C}(\mathbf{r})$};
+  \node[blockG,text width=1.4cm,minimum height=0.9cm,
+    right=0.5cm of render,yshift=-0.5cm] (vol3d) {3D Density\\ Volume\\ $\sigma(x,y,z)$};
+  \draw[arrow] (render) -- (ctout);
+  \draw[arrow] (render) -- (vol3d);
+  \node[blockR,text width=1.7cm,minimum height=0.8cm,below=0.5cm of render]
+    (loss) {Rendering Loss\\ $\|\hat{C}-C_\text{GT}\|^2$};
+  \draw[arrow,dashed] (ctout.south) |- (loss.east);
+  \draw[arrow,dashed,red!50] (loss.west) -| (mlp.south)
+    node[pos=0.3,below,font=\tiny,red!50]{backprop};
+  \node[blockP,text width=2.0cm,minimum height=0.75cm,below=0.3cm of mlp]
+    (disent) {Shape / Depth\\ Disentanglement\\ (MedNeRF)};
+  \draw[arrow,dashed] (mlp.south) -- (disent.north);
+\end{tikzpicture}
+\caption{Neural Radiance Field (NeRF) architecture adapted for medical imaging.
+A 2D CNN encoder extracts latent code $\mathbf{z}$ from a single X-ray. The
+NeRF MLP maps 3D coordinates conditioned on $\mathbf{z}$ to density $\sigma$
+and radiance $\mathbf{c}$. Volumetric rendering synthesizes CT projections from
+arbitrary angles, and the 3D density volume constitutes the reconstructed
+CT~\cite{mednerf,x2br}.}
+\label{fig:nerf_arch}
+\end{figure*}
+
+\subsection{MedNeRF: Medical Neural Radiance Fields}
+\label{sec:nerf:mednerf}
+
+Corona-Figueroa et al.~\cite{mednerf} proposed MedNeRF, the first application of
+neural radiance fields to the problem of reconstructing 3D-aware CT projections
+from a single or few X-ray images. MedNeRF introduces a novel design that
+disentangles shape and volumetric depth, learning a continuous representation of
+CT scans by separately modelling surface geometry and internal density from 2D
+X-ray observations. Validated on chest and knee datasets, MedNeRF demonstrates
+that a single input X-ray is sufficient to synthesize new CT projections from
+arbitrary viewing angles. By reducing the number of X-ray projections required
+to infer 3D anatomy from hundreds (CT) to one, it has the potential to
+substantially reduce patient radiation exposure.
+
+\subsection{X2BR: Hybrid Neural Implicit Framework for Bone Reconstruction}
+\label{sec:nerf:x2br}
+
+Guven et al.~\cite{x2br} proposed X2BR, combining continuous volumetric
+reconstruction with template-guided non-rigid registration for high-fidelity 3D
+bone reconstruction from a single planar X-ray. X2BR comprises two components.
+The first, X2B, employs a ConvNeXt-based encoder to predict a 3D bone occupancy
+field using an implicit neural representation:
+\begin{equation}
+f_\theta: (\mathbf{x},\mathbf{z}) \mapsto o \in [0,1]
+\label{eq:x2b}
+\end{equation}
+where $\mathbf{x} \in \mathbb{R}^3$ is a 3D query point and $\mathbf{z}$ is
+the X-ray latent code. X2B achieves IoU of 0.952 and Chamfer-L1 distance of
+0.005, without relying on statistical shape models. The second component
+integrates anatomical priors via YOLOv9-based landmark detection and
+geodesic-based coherent point drift (CPD) registration, improving anatomical
+consistency (IoU: 0.875 for X2BR).
+
+Table~\ref{tab:nerf_comparison} summarizes NeRF and neural implicit methods.
+
+\begin{table*}[t]
+\caption{Comparison of Neural Radiance Field and Neural Implicit Methods}
+\label{tab:nerf_comparison}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llllp{2.5cm}p{2.0cm}p{3.2cm}@{}}
+\toprule
+\textbf{Method} & \textbf{Year} & \textbf{Input} & \textbf{Region} &
+\textbf{Representation} & \textbf{Dataset} & \textbf{Performance}\\
+\midrule
+MedNeRF~\cite{mednerf} & 2022 & Single / few X-rays & Chest / Knee &
+  NeRF + shape--depth disentanglement & Chest \& knee CTs &
+  High-fidelity CT projection synthesis; SOTA NeRF comparison\\
+X2BR~\cite{x2br} & 2026 & Single planar X-ray & Bone (Rib, Vertebra) &
+  ConvNeXt + neural occupancy + CPD registration & Institutional bone CT &
+  X2B: IoU=0.952, Chamfer=0.005; X2BR: superior anatomical realism\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =========================================================
+\section{Complementary CNN and Transformer Approaches}
+\label{sec:cnn}
+%% =========================================================
+
+\subsection{XctNet: Attention-Based Single-View Reconstruction}
+\label{sec:cnn:xctnet}
+
+Tan et al.~\cite{xctnet} proposed XctNet, introducing: (1)~a self-attention
+module for adaptive feature optimization; (2)~a multi-scale feature fusion
+module integrating representations at multiple spatial resolutions; and
+(3)~a 3D branch generation module producing volumetric outputs at different
+generation fields. XctNet achieved SSIM of 0.8681 and PSNR of 29.28\,dB,
+significantly outperforming state-of-the-art methods at publication time.
+
+\subsection{X-CTRSNet: Joint Reconstruction and Segmentation}
+\label{sec:cnn:xctrs}
+
+Ge et al.~\cite{xctrsnet} proposed X-CTRSNet, the first framework for
+simultaneous 3D reconstruction and segmentation of cervical vertebrae CT
+directly from orthogonal 2D AP and lateral X-ray images. It couples SpaDRNet
+(reconstruction) and MulSISNet (segmentation) through a Reconstruction-
+Segmentation Consistency (RSC) learning strategy:
+\begin{equation}
+\mathcal{L}_\text{RSC} = \mathcal{L}_\text{recon}
++ \lambda\,\mathcal{L}_\text{seg}
++ \mu\,\mathcal{L}_\text{consistency}
+\label{eq:rsc}
+\end{equation}
+achieving PSNR=24.58\,dB, SSIM=0.749, and Dice coefficient of 80.44\%.
+
+\subsection{AI-Driven CT Reconstruction: Clinical Perspectives}
+\label{sec:cnn:clinical}
+
+Pisuchpen et al.~\cite{pisuchpen2026} provide a comprehensive review of AI in
+CT image reconstruction for abdominal imaging. Deep Learning-based Reconstruction
+(DLR) techniques leverage CNNs for high-fidelity denoising, enabling
+diagnostic-quality CT at substantially reduced radiation doses. These clinical
+advances establish the benchmark that synthetic CT from X-ray must meet for
+acceptance in radiology practice, and validate the architectural principles
+(CNNs for volumetric feature learning, perceptual losses, multi-scale
+processing) adopted in the synthesis literature.
+
+%% =========================================================
+\section{Comparative Analysis Across Method Categories}
+\label{sec:comparison}
+%% =========================================================
+
+\subsection{Architectural Paradigm Evolution}
+\label{sec:comparison:arch}
+
+Figure~\ref{fig:arch_evolution} illustrates the architectural progression from
+classical models to modern generative frameworks. The evolution follows a clear
+trajectory: from handcrafted geometric models requiring explicit anatomical
+knowledge, through discriminative CNN encoders, to generative frameworks
+modelling the full distribution of plausible 3D volumes.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=0.82,every node/.style={font=\scriptsize}]
+  \draw[very thick,-{Stealth}] (0,0) -- (0,5.3)
+    node[left,rotate=90,font=\small\bfseries,xshift=1.5cm]
+    {Accuracy};
+  \draw[very thick,-{Stealth}] (0,0) -- (7.3,0)
+    node[below,font=\small\bfseries] {Data \& Model Complexity};
+  \node[blockO,text width=1.3cm,minimum height=0.75cm,
+    rounded corners=5pt] at (0.9,1.0) {SSM\\ (1990s)};
+  \node[blockO,text width=1.3cm,minimum height=0.75cm,
+    rounded corners=5pt] at (2.0,1.7) {Para-\\ metric};
+  \node[blockO,text width=1.3cm,minimum height=0.75cm,
+    rounded corners=5pt] at (3.0,2.4) {Contour\\ FFD};
+  \node[blockG,text width=1.3cm,minimum height=0.75cm,
+    rounded corners=5pt] at (4.0,3.1) {Early\\ CNN};
+  \node[blockR,text width=1.3cm,minimum height=0.75cm,
+    rounded corners=5pt] at (5.0,3.7) {GAN\\ (X2CT)};
+  \node[blockR,text width=1.3cm,minimum height=0.75cm,
+    rounded corners=5pt] at (5.8,4.2) {Trans.\\ GAN};
+  \node[blockP,text width=1.3cm,minimum height=0.75cm,
+    rounded corners=5pt] at (6.6,4.8) {Diff. /\\ NeRF};
+  \draw[very thick,dashed,draw=gray!50,-{Stealth}]
+    (0.6,0.6) .. controls (3.5,2.8) .. (6.8,5.0);
+\end{tikzpicture}
+\caption{Qualitative illustration of architectural paradigm evolution in 2D X-ray
+to 3D CT reconstruction. Methods are plotted by data/model complexity (x-axis)
+and reconstruction quality (y-axis), showing a consistent upward trend.}
+\label{fig:arch_evolution}
+\end{figure}
+
+\subsection{Input Requirements and View Flexibility}
+\label{sec:comparison:input}
+
+Classical methods typically require two or more calibrated X-ray views with
+explicit correspondence annotations. Early CNNs and GANs use biplanar inputs.
+Recent methods---XctNet, AP2CT-GAN, PTX2CT-GAN, MedNeRF, and X2BR---push the
+frontier of single-view reconstruction, which is the most clinically practical
+scenario. DX2CT handles both mono- and biplanar inputs within a unified
+framework, providing flexibility for different clinical settings.
+
+\subsection{Anatomical Scope}
+\label{sec:comparison:anatomy}
+
+Table~\ref{tab:anatomical_scope} summarizes the anatomical coverage across
+methods. Classical methods were predominantly validated on skeletal structures
+(femur, tibia, pelvis, spine). Modern deep learning methods have substantially
+broadened the anatomical scope to include chest, lungs, cervical vertebrae, and
+pathological conditions (pneumothorax).
+
+\begin{table}[h]
+\caption{Anatomical Scope of Representative Methods}
+\label{tab:anatomical_scope}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{1.7cm}p{2.2cm}p{2.3cm}@{}}
+\toprule
+\textbf{Region} & \textbf{Classical} & \textbf{DL / Generative}\\
+\midrule
+Femur / Knee & Karade, Koh, Zhu, Kim & Kasten, DP-GAN+B\\
+Pelvis & Lamecker, Zheng & ---\\
+Spine & Humbert, Cresson & X-CTRSNet\\
+Chest / Lung & --- & X2CT-GAN, TRCT-GAN, AP2CT-GAN, DVG-Diff\\
+C-Vertebra & --- & X-CTRSNet\\
+Wrist / Bone & --- & Yoon (Diff.), X2BR\\
+Pneumothorax & --- & PTX2CT-GAN\\
+General & --- & XctNet, MedNeRF\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cross-Era Quantitative Comparison}
+\label{sec:comparison:quant}
+
+Table~\ref{tab:crossera} provides a cross-era comparison of representative
+methods, highlighting the progressive improvement in quantitative metrics.
+A significant challenge in comparing methods across the literature is the
+heterogeneity of evaluation metrics: classical methods report geometric error
+metrics (mean point-to-surface distance, RMS error in mm) while modern methods
+report image quality metrics (SSIM, PSNR) on standardized datasets.
+
+\begin{table*}[t]
+\caption{Cross-Era Comparison of Key Methods Across All Four Eras}
+\label{tab:crossera}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lllllp{2.5cm}p{3.0cm}@{}}
+\toprule
+\textbf{Method} & \textbf{Era} & \textbf{Type} & \textbf{Region} &
+\textbf{Input} & \textbf{Metric} & \textbf{Key Result}\\
+\midrule
+Karade et al.~\cite{karade2015} & Classical & Contour+LSD & Femur &
+  Biplanar & MP2S (mm) & 1.2\,mm; 49\,sec\\
+Kasten et al.~\cite{kasten2020} & Early CNN & CNN & Knee &
+  Biplanar DRR & Dice / Chamfer & Dice=0.906; Chamfer=1.778\,mm; 0.5\,sec\\
+X-CTRSNet~\cite{xctrsnet} & CNN+GAN & Joint R+S & C-Vertebra &
+  Biplanar & PSNR / SSIM / Dice & 24.58\,dB; 0.749; 80.44\%\\
+XctNet~\cite{xctnet} & CNN & Attn-CNN & General &
+  Single & PSNR / SSIM & 29.28\,dB; 0.8681\\
+TRCT-GAN~\cite{trctgan} & GAN & Trans.-GAN & Chest &
+  Biplanar & SSIM / PSNR & Superior to X2CT-GAN baseline\\
+MedNeRF~\cite{mednerf} & NeRF & Neural Implicit & Chest/Knee &
+  Single/few & SSIM / qual. & High-fidelity CT projection synthesis\\
+DVG-Diffusion~\cite{dvgdiffusion} & Diffusion & Latent Diff. & Chest &
+  Few-view & SSIM / PSNR / FID & SOTA; best fidelity-perceptual balance\\
+X2BR~\cite{x2br} & Neural Implicit & ConvNeXt+CPD & Bone &
+  Single & IoU / Chamfer-L1 & X2B: IoU=0.952; superior anatomical realism\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% =========================================================
+\section{Challenges and Future Directions}
+\label{sec:challenges}
+%% =========================================================
+
+Figure~\ref{fig:challenges_overview} summarizes the primary open challenges.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[every node/.style={font=\scriptsize}]
+  \node[blockR,text width=1.8cm,minimum height=0.9cm,rounded corners=5pt]
+    (center) at (0,0) {\textbf{Open}\\ \textbf{Challenges}};
+  \foreach \angle/\lbl/\col in {
+    90/Dataset\\ Scarcity/blue!60!black,
+    30/Anatomical\\ Generalization/green!60!black,
+    330/Resolution\\ \& Detail/orange!70!black,
+    270/Clinical\\ Validation/red!60!black,
+    210/Workflow\\ Integration/purple!60!black,
+    150/Physics-\\ Informed/teal!60!black}{
+    \node[draw=\col,fill=\col!10,rounded corners,text width=1.5cm,
+      minimum height=0.75cm,text centered,text=\col]
+      (\angle) at (\angle:2.4cm) {\lbl};
+    \draw[-{Stealth[length=4pt]},\col!70] (center) -- (\angle);
+  }
+\end{tikzpicture}
+\caption{Six key open challenge areas in 2D X-ray to 3D CT reconstruction,
+each representing a significant research gap requiring dedicated investigation.}
+\label{fig:challenges_overview}
+\end{figure}
+
+\subsection{Dataset Scarcity and Ethical Constraints}
+\label{sec:challenges:data}
+
+The fundamental bottleneck for all data-driven methods is the availability of
+paired X-ray and CT data from the same patient. This is ethically and
+practically challenging---subjecting patients to additional radiation purely for
+research is generally not justified. Most studies rely on synthetic X-rays
+generated from CT data using digitally reconstructed radiograph (DRR)
+algorithms, but the domain gap between simulated and real X-ray appearance
+limits generalization. Future work should explore: (1)~federated learning pooling
+data across institutions; (2)~physics-based X-ray simulation with realistic noise
+and scatter; (3)~self-supervised and semi-supervised learning paradigms; and
+(4)~foundation model approaches pre-trained on large heterogeneous medical image
+datasets.
+
+\subsection{Anatomical Generalization}
+\label{sec:challenges:anatomy}
+
+Most current methods are trained and validated on a single anatomical region and
+do not generalize to other body parts. The development of universal anatomical
+reconstruction models handling the full range of clinical X-ray examinations
+remains an open problem. Promising directions include multi-task learning with
+shared encoders and region-specific decoders, hierarchical models that first
+segment the region of interest, and foundation models trained on large-scale
+multi-anatomy datasets with anatomical conditioning.
+
+\subsection{Resolution and Fine Structural Detail}
+\label{sec:challenges:resolution}
+
+Current methods achieve promising results at moderate resolution ($128^3$ or
+$256^3$ voxels) but struggle to reproduce fine anatomical detail---trabecular
+bone microstructure, small pulmonary nodules, delicate vascular structures.
+Cascade architectures generating a low-resolution coarse volume followed by
+super-resolution, and patch-based training (as in Yoon et al.~\cite{yoon2024}),
+represent promising approaches. Implicit neural representations offer theoretical
+resolution independence but face optimization challenges at fine scales.
+
+\subsection{Clinical Validation and Regulatory Pathway}
+\label{sec:challenges:clinical}
+
+The gap between research validation and clinical deployment is perhaps the most
+critical challenge. Current methods are evaluated on quantitative image quality
+metrics (SSIM, PSNR, Dice) that correlate imperfectly with clinical utility.
+Future work must develop: (1)~task-specific evaluation protocols measuring
+radiologist performance in detecting specific pathologies; (2)~prospective
+clinical studies validating diagnostic accuracy; (3)~uncertainty quantification
+methods allowing clinicians to identify regions of low model confidence; and
+(4)~regulatory frameworks for AI-synthesized medical images, which currently do
+not exist in most jurisdictions.
+
+\subsection{Integration with Clinical Workflow}
+\label{sec:challenges:workflow}
+
+For any reconstruction method to achieve clinical adoption, it must integrate
+with existing radiology workflows: inference times of seconds or minutes,
+integration with PACS and DICOM standards, robust performance across scanner
+vendors, and interpretable outputs. Lightweight architectures (DP-GAN+B's 44\%
+parameter reduction) and efficient diffusion samplers represent steps toward
+practical deployment. Edge deployment on portable X-ray machines opens new
+possibilities for point-of-care 3D imaging in resource-limited settings.
+
+\subsection{Physics-Informed and Anatomically Constrained Models}
+\label{sec:challenges:physics}
+
+Pure data-driven methods can produce anatomically implausible
+reconstructions---missing organs, distorted geometry, hallucinated
+structures---when extrapolating beyond the training distribution. Physics-informed
+neural networks (PINNs) can encode X-ray attenuation physics into the network.
+Biomechanical constraints (as in X2BR's template-guided registration) ensure
+physically plausible geometry. Integrating these constraints with diffusion
+models---whose iterative refinement is amenable to constraint injection at each
+denoising step---is a highly promising research direction.
+
+%% =========================================================
+\section{Conclusion}
+\label{sec:conclusion}
+%% =========================================================
+
+This survey has traced the evolution of 2D X-ray to 3D CT reconstruction across
+more than three decades, from classical statistical shape models and geometric
+registration methods through the deep learning revolution and into the modern
+era of generative adversarial networks, diffusion models, and neural radiance
+fields. Building on the foundational taxonomy of Maken and Gupta~\cite{maken2023},
+we have systematically reviewed eleven papers representing the state of the art
+as of 2025--2026, organized into four categories: GAN-based methods, diffusion-based
+methods, neural radiance field methods, and complementary CNN architectures.
+
+Key insights from this survey are as follows. First, the field has undergone a
+clear paradigm shift from handcrafted geometric models to end-to-end learned
+generative frameworks, broadening anatomical scope, reducing input requirements
+from many calibrated views to a single X-ray, and dramatically improving
+reconstruction speed and quality. Second, GAN-based methods have established
+biplanar and single-view chest reconstruction as mature capabilities, while
+disease-specific adaptations (PTX2CT-GAN) demonstrate the value of targeted
+architectural design. Third, diffusion models offer stable training, better
+distributional coverage, and built-in uncertainty quantification---DX2CT and
+DVG-Diffusion represent current state of the art. Fourth, neural radiance fields
+(MedNeRF, X2BR) introduce continuous implicit volumetric representations enabling
+extremely sparse-view reconstruction with significant radiation dose reduction
+potential. Fifth, hybrid methods combining neural implicit learning with
+anatomical priors (X2BR) provide the most clinically grounded reconstructions.
+
+Despite these advances, critical challenges remain: dataset scarcity, anatomical
+generalization across body regions, clinical validation through task-specific
+evaluation and prospective studies, and regulatory frameworks for AI-synthesized
+medical images. Addressing these challenges will require collaboration across the
+deep learning research community, medical imaging, clinical radiology, regulatory
+agencies, and healthcare systems worldwide.
+
+The vision motivating this field---providing 3D anatomical information at X-ray
+radiation doses and costs---is increasingly within reach. As methods reviewed
+in this survey continue to mature and clinical validation studies accumulate,
+X-ray to CT reconstruction has the potential to transform diagnostic imaging
+practice, bringing CT-level diagnostic power to settings that currently lack
+access while reducing radiation exposure for all patients.
+
+%% =========================================================
+
+%% =========================================================
+
+
+%% =========================================================
+%% REFERENCES
+%% =========================================================
+\begin{thebibliography}{99}
+
+\bibitem{maken2023}
+Maken P, Gupta A (2023) 2D-to-3D: A review for computational 3D image
+reconstruction from X-ray images. Arch Comput Methods Eng 30:85--114.
+\url{https://doi.org/10.1007/s11831-022-09790-z}
+
+\bibitem{goodfellow2014}
+Goodfellow I, Pouget-Abadie J, Mirza M et al (2014) Generative adversarial
+nets. In: Advances in Neural Information Processing Systems (NeurIPS) 27
+
+\bibitem{ho2020ddpm}
+Ho J, Jain A, Abbeel P (2020) Denoising diffusion probabilistic models.
+NeurIPS 33:6840--6851
+
+\bibitem{nerf2020}
+Mildenhall B, Srinivasan PP, Tancik M et al (2020) NeRF: Representing scenes
+as neural radiance fields for view synthesis. ECCV 2020. Lect Notes Comput Sci
+12346:405--421
+
+\bibitem{cootes1992}
+Cootes TF, Taylor CJ, Cooper DH, Graham J (1992) Training models of shape from
+sets of examples. Proc BMVC 1992:9--18
+
+\bibitem{kasten2020}
+Kasten Y, Doktofsky D, Kovler I (2020) End-to-end convolutional neural network
+for 3D reconstruction of knee bones from bi-planar X-ray images. In: Mach Learn
+Med Image Reconstr (MLMIR 2020). Springer, pp 123--133
+
+\bibitem{dixit2019}
+Dixit S, Pai VG, Rodrigues VC et al (2019) 3D reconstruction of 2D X-ray
+images. In: Proc 4th Int Conf CSITSS 2019, pp 1--5
+
+\bibitem{kim2019}
+Kim H, Lee K, Lee D, Baek N (2019) 3D reconstruction of leg bones from X-ray
+images using CNN-based feature analysis. In: Proc ICTC 2019, pp 669--672
+
+\bibitem{lamecker2006}
+Lamecker H, Wenckebach T, Hege H-C (2006) Atlas-based 3D-shape reconstruction
+from X-ray images. In: Proc ICPR 2006. IEEE, pp 371--374
+
+\bibitem{zheng2010}
+Zheng G (2010) Statistical shape model-based reconstruction of a scaled,
+patient-specific surface model of the pelvis from a single standard AP X-ray
+radiograph. Med Phys 37:1424--1439
+
+\bibitem{zhu2011}
+Zhu Z, Li G (2011) Construction of 3D human distal femoral surface models
+using a 3D statistical deformable model. J Biomech 44:2362--2368
+
+\bibitem{humbert2009}
+Humbert L, De Guise JA, Aubert B, Godbout B, Skalli W (2009) 3D reconstruction
+of the spine from biplanar X-rays using parametric models. Med Eng Phys
+31:681--687
+
+\bibitem{chaibi2012}
+Chaibi Y, Cresson T, Benjamin A et al (2012) Fast 3D reconstruction of the
+lower limb using a parametric model from biplanar X-rays. Comput Methods
+Biomech Biomed Eng 15:457--466
+
+\bibitem{koh2011}
+Koh K, Kim YH, Kim K, Park WM (2011) Reconstruction of patient-specific
+femurs using X-ray and sparse CT images. Comput Biol Med 41:421--426
+
+\bibitem{gunay2007}
+Gunay M, Shim MB, Shimada K (2007) Cost- and time-effective three-dimensional
+bone-shape reconstruction from X-ray images. Int J Med Robot.
+\url{https://doi.org/10.1002/rcs.162}
+
+\bibitem{karade2015}
+Karade V, Ravi B (2015) 3D femur model reconstruction from biplane X-ray images:
+a novel method based on Laplacian surface deformation. Int J Comput Assist
+Radiol Surg 10:473--485
+
+\bibitem{x2ctgan}
+Ying X, Guo H, Ma K et al (2019) X2CT-GAN: Reconstructing CT from biplanar
+X-rays with generative adversarial networks. In: Proc CVPR 2019, pp 10619--10628
+
+\bibitem{cvaegan}
+Jiang L, Zhang M, Wei R et al (2021) Reconstruction of 3D CT from a single
+X-ray projection view using CVAE-GAN. In: Proc IEEE ICMIPE 2021.
+\url{https://doi.org/10.1109/ICMIPE53131.2021.9698875}
+
+\bibitem{xctrsnet}
+Ge R, He Y, Xia C et al (2022) X-CTRSNet: 3D cervical vertebra CT
+reconstruction and segmentation directly from 2D X-ray images. Knowl Based
+Syst 236:107680. \url{https://doi.org/10.1016/j.knosys.2021.107680}
+
+\bibitem{xctnet}
+Tan Z, Li J, Tao H, Li S, Hu Y (2022) XctNet: Reconstruction network of
+volumetric images from a single X-ray image. Comput Med Imaging Graph
+98:102067. \url{https://doi.org/10.1016/j.compmedimag.2022.102067}
+
+\bibitem{trctgan}
+Wang Y, Sun Z-L, Zeng Z, Lam K-M (2023) TRCT-GAN: CT reconstruction from
+biplane X-rays using transformer and generative adversarial networks. Digit
+Signal Process 140:104123. \url{https://doi.org/10.1016/j.dsp.2023.104123}
+
+\bibitem{dpganb}
+Xing X, Li X, Wei C et al (2024) DP-GAN+B: A lightweight generative adversarial
+network based on depthwise separable convolutions for generating CT volumes.
+Comput Biol Med 174:108393.
+\url{https://doi.org/10.1016/j.compbiomed.2024.108393}
+
+\bibitem{yoon2024}
+Yoon S, Pratap JS, Liu W-C et al (2024) High-resolution 3D CT synthesis from
+bidirectional X-ray images using 3D diffusion model. In: Proc IEEE ISBI 2024.
+\url{https://doi.org/10.1109/ISBI56570.2024.10635648}
+
+\bibitem{dx2ct}
+Jeong YS, Yoo HB, Chun IY (2025) DX2CT: Diffusion model for 3D CT
+reconstruction from bi or mono-planar 2D X-ray(s). In: Proc IEEE ICASSP 2025.
+\url{https://doi.org/10.1109/ICASSP49660.2025.10888986}
+
+\bibitem{ap2ctgan}
+Tang T, Cai W, Yang B et al (2025) A novel medical image reconstruction
+framework for 3D chest CT based on a single 2D anteroposterior X-ray image.
+In: Proc IEEE SMC 2025.
+\url{https://doi.org/10.1109/SMC58881.2025.11342980}
+
+\bibitem{ptx2ctgan}
+Wang Q, Tang T, Huang J et al (2025) PTX2CT-GAN: Reconstruction of chest CT
+from single X-ray radiography for pneumothorax. In: Proc IEEE BIBM 2025.
+\url{https://doi.org/10.1109/BIBM66473.2025.11356273}
+
+\bibitem{dvgdiffusion}
+Xie X, Liu J, Fan H et al (2026) DVG-Diffusion: Dual-view-guided diffusion
+model for CT reconstruction from X-rays. IEEE Trans Image Process 35:1158--1172
+
+\bibitem{mednerf}
+Corona-Figueroa A, Frawley J, Bond-Taylor S et al (2022) MedNeRF: Medical
+neural radiance fields for reconstructing 3D-aware CT-projections from a single
+X-ray. In: Proc IEEE EMBC 2022.
+\url{https://doi.org/10.1109/EMBC48229.2022.9871757}
+
+\bibitem{x2br}
+Guven G, Ugurdag F, Ates HF (2026) X2BR: High-fidelity 3D bone reconstruction
+from a planar X-ray image with hybrid neural implicit methods. Med Biol Eng
+Comput. \url{https://doi.org/10.1007/s11517-026-03549-5}
+
+\bibitem{pisuchpen2026}
+Pisuchpen N, Srinivas Rao S, Noda Y et al (2026) Artificial intelligence (AI)
+and CT in abdominal imaging: image reconstruction and beyond. Abdom Radiol
+51:424--445. \url{https://doi.org/10.1007/s00261-025-05031-6}
+
+\bibitem{gupta2020}
+Gupta A (2020) Challenges for computer aided diagnostics using X-ray and
+tomographic reconstruction images in craniofacial applications. Int J Comput
+Vis Robot 10:11. \url{https://doi.org/10.1504/IJCVR.2020.10029170}
+
+\end{thebibliography}
 
 \end{document}

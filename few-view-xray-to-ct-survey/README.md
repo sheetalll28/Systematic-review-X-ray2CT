@@ -41,6 +41,14 @@ few-view-xray-to-ct-survey/
 ├── .gitignore                 ← Git ignore rules for LaTeX, Python, etc.
 ├── requirements.txt           ← Python dependencies for helper scripts
 │
+├── literature/                ← Source literature and reference papers
+│   ├── base_paper.pdf         ← The foundational base paper for this survey
+│   └── surveyed_papers/       ← PDFs of reviewed papers categorized by methodology
+│       ├── diffusion/
+│       ├── gan/
+│       ├── nerf/
+│       └── extra/
+│
 ├── report/                    ← LaTeX source for the survey manuscript
 │   ├── main.tex               ← Master document (includes all sections)
 │   ├── references.bib         ← BibTeX bibliography
@@ -58,7 +66,8 @@ few-view-xray-to-ct-survey/
 │   │   ├── future_directions.tex
 │   │   └── conclusion.tex
 │   └── output/
-│       └── final_report_placeholder.md
+│       ├── CV_REPORT.pdf      ← The fully compiled survey/report
+│       └── README.md          ← Instructions for viewing/generating the report
 │
 ├── paper_metadata/            ← Curated paper lists and screening notes
 │   ├── included_papers.md
@@ -167,21 +176,12 @@ If you find this survey useful, please consider citing:
 
 ```bibtex
 @article{few_view_xray_ct_survey_2025,
-  title   = {A Systematic Review of Few-View X-Ray-to-CT Reconstruction:
-             From Single-View Learning to Diffusion-Based 3D Generation},
-  author  = {[Author Names]},
-  journal = {[Target Venue]},
-  year    = {2025},
+  title   = {From X-ray to CT: A Comprehensive Survey of 2D-to-3D Reconstruction Methods From Classical Statistical Shape Models to Generative and Neural Implicit Frameworks},
+  author  = {Sheetal Lodhi},
+  year    = {2026},
   note    = {Manuscript under preparation}
 }
 ```
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ---
 
 ## Acknowledgements

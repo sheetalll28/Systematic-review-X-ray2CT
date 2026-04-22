@@ -22,8 +22,7 @@
 *.bcf
 *.run.xml
 
-# Compiled PDF (keep final outputs in output/ only)
-report/*.pdf
+
 
 # ====================
 # Python
